@@ -1,0 +1,373 @@
+package ch.unil.doplab.cinerate.domain;
+
+import java.util.*;
+
+public class Movie {
+
+    public static final int minRating = Rating.ONE.getValue();
+    public static final int maxRating = Rating.TEN.getValue();
+    public static final int noRating = Rating.NO_RATING.getValue();
+
+    private UUID uuid;
+    private String title;
+    private int releaseYear;
+    private String synopsis;
+    private int duration;
+    private String posterUrl;
+    private Set<Genre> genres;
+    private UUID directorID;
+    private String directorName;
+    private List<UUID> cast;
+    private Set<String> keywords;
+    private double ratingAverage;
+    private long ratingCount;
+    private Map<UUID, Review> reviews;
+
+    public Movie() {
+        this(null, null, 0, null, 0, null);
+    }
+
+    public Movie(String title, int releaseYear) {
+        this(null, title, releaseYear, null, 0, null);
+    }
+
+    public Movie(String title, int releaseYear, String synopsis, int duration) {
+        this(null, title, releaseYear, synopsis, duration, null);
+    }
+
+    public Movie(UUID uuid, String title, int releaseYear) {
+        this(uuid, title, releaseYear, null, 0, null);
+    }
+
+    public Movie(UUID uuid, String title, int releaseYear, String synopsis, int duration) {
+        this(uuid, title, releaseYear, synopsis, duration, null);
+    }
+
+    public Movie(UUID uuid, String title, int releaseYear, String synopsis, int duration, String posterUrl) {
+        this.uuid = uuid;
+        this.title = title;
+        this.releaseYear = releaseYear;
+        this.synopsis = synopsis;
+        this.duration = duration;
+        this.posterUrl = posterUrl;
+        this.genres = new HashSet<>();
+        this.directorID = null;
+        this.directorName = null;
+        this.cast = new ArrayList<>();
+        this.keywords = new TreeSet<>();
+        // this.ratingAverage = 0;
+        this.ratingAverage = noRating;
+        this.ratingCount = 0;
+        this.reviews = new HashMap<>();
+    }
+
+    public void replaceWith(Movie movie) {
+        if (movie == null) {
+            throw new IllegalArgumentException("Movie must not be null");
+        }
+        this.title = movie.title;
+        this.releaseYear = movie.releaseYear;
+        this.synopsis = movie.synopsis;
+        this.duration = movie.duration;
+        this.posterUrl = movie.posterUrl;
+        this.genres = movie.genres;
+        this.directorID = movie.directorID;
+        this.directorName = movie.directorName;
+        this.cast = movie.cast;
+        this.keywords = movie.keywords;
+    }
+
+    public void mergeWith(Movie movie) {
+        if (movie == null) {
+            throw new IllegalArgumentException("Movie must not be null");
+        }
+        if (movie.uuid != null) {
+            this.uuid = movie.uuid;
+        }
+        if (movie.title != null) {
+            this.title = movie.title;
+        }
+        if (movie.releaseYear != 0) {
+            this.releaseYear = movie.releaseYear;
+        }
+        if (movie.synopsis != null) {
+            this.synopsis = movie.synopsis;
+        }
+        if (movie.duration != 0) {
+            this.duration = movie.duration;
+        }
+        if (movie.posterUrl != null) {
+            this.posterUrl = movie.posterUrl;
+        }
+        if (!movie.genres.isEmpty()) {
+            this.genres.addAll(movie.genres);
+        }
+        if (movie.directorID != null) {
+            this.directorID = movie.directorID;
+        }
+        if (movie.directorName != null) {
+            this.directorName = movie.directorName;
+        }
+        if (!movie.cast.isEmpty()) {
+            this.cast = movie.cast;
+        }
+        if (!movie.keywords.isEmpty()) {
+            this.keywords.addAll(movie.keywords);
+        }
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
+    public void setUUID(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+    }
+
+    public List<Genre> getGenres() {
+        return new ArrayList<>(genres);
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = new HashSet<>(genres);
+    }
+
+    public void addGenre(Genre genre) {
+        genres.add(genre);
+    }
+
+    public void removeGenre(Genre genre) {
+        genres.remove(genre);
+    }
+
+    public boolean hasGenre(Genre genre) {
+        return genres.contains(genre);
+    }
+
+    public UUID getDirectorID() {
+        return directorID;
+    }
+
+    public void setDirectorID(UUID directorID) {
+        this.directorID = directorID;
+    }
+
+    public String getDirectorName() {
+        return directorName;
+    }
+
+    public void setDirectorName(String directorName) {
+        this.directorName = directorName;
+    }
+
+    public void setDirector(Director director) {
+        setDirector(director, null);
+    }
+
+    public void setDirector(Director newDirector, Director oldDirector) {
+        if (oldDirector != null) {
+            if (!isDirectedBy(oldDirector.getUUID())) {
+                throw new IllegalStateException(oldDirector.getFullName() + " is not the director of " + title);
+            }
+            oldDirector.removeMovie(this.uuid);
+        }
+        this.directorID = newDirector.getUUID();
+        this.directorName = newDirector.getFullName();
+        newDirector.addMovie(this.uuid);
+    }
+
+    public void removeDirector(Director director) {
+        if (!isDirectedBy(director.getUUID())) {
+            throw new IllegalStateException(director.getFullName() + " is not the director of " + title);
+        }
+        this.directorID = null;
+        this.directorName = null;
+        director.removeMovie(this.uuid);
+    }
+
+    public boolean isDirectedBy(UUID directorID) {
+        return Objects.equals(this.directorID, directorID);
+    }
+
+    public List<UUID> getCast() {
+        return cast;
+    }
+
+    public void setCast(List<UUID> cast) {
+        this.cast = cast;
+    }
+
+    public void addActor(Actor actor) {
+        if (cast.contains(actor.getUUID())) {
+            throw new IllegalStateException(actor.getFullName() + " is already in the cast of " + title);
+        }
+        cast.add(actor.getUUID());
+        actor.addMovie(this.uuid);
+    }
+
+    public void removeActor(Actor actor) {
+        if (!cast.contains(actor.getUUID())) {
+            throw new IllegalStateException(actor.getFullName() + " is not in the cast of " + title);
+        }
+        cast.remove(actor.getUUID());
+        actor.removeMovie(this.uuid);
+    }
+
+    public boolean hasActor(UUID actorID) {
+        return cast.contains(actorID);
+    }
+
+    public List<String> getKeywords() {
+        return new ArrayList<>(keywords);
+    }
+
+    public void setKeywords(List<String> keywords) {
+        this.keywords = new TreeSet<>();
+        for (String keyword : keywords) {
+            addKeyword(keyword);
+        }
+    }
+
+    public void addKeyword(String keyword) {
+        keywords.add(keyword.toLowerCase());
+    }
+
+    public void removeKeyword(String keyword) {
+        keywords.remove(keyword.toLowerCase());
+    }
+
+    public boolean hasKeyword(String keyword) {
+        return keywords.contains(keyword.toLowerCase());
+    }
+
+    public double getRatingAverage() {
+        return ratingAverage;
+    }
+
+    public void setRatingAverage(double ratingAverage) {
+        this.ratingAverage = ratingAverage;
+    }
+
+    public long getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(long ratingCount) {
+        this.ratingCount = ratingCount;
+    }
+
+    public String getFormattedRating() {
+        return Utils.formatMovieRating(ratingAverage);
+    }
+
+    public void rate(int rating) {
+        if (rating < minRating || rating > maxRating) {
+            throw new IllegalArgumentException("Rating must be between " + minRating + " and " + maxRating);
+        }
+        ratingAverage = (ratingAverage * ratingCount + rating) / ++ratingCount;
+    }
+
+    public void unrate(int rating) {
+        if (rating < minRating || rating > maxRating) {
+            throw new IllegalArgumentException("Rating must be between " + minRating + " and " + maxRating);
+        }
+        if (ratingCount > 1) {
+            ratingAverage = (ratingAverage * ratingCount - rating) / --ratingCount;
+        } else {
+            ratingAverage = noRating;
+            ratingCount = 0;
+        }
+    }
+
+    public Review getReview(UUID userID) {
+        return reviews.get(userID);
+    }
+
+    public boolean hasReviewFrom(UUID userID) {
+        return reviews.containsKey(userID);
+    }
+
+    public boolean putReview(Review review) {
+        return reviews.putIfAbsent(review.getUserID(), review) == null;
+    }
+
+    public boolean removeReview(Review review) {
+        return reviews.remove(review.getUserID()) != null;
+    }
+
+    public List<Review> getReviews() {
+        return new ArrayList<>(reviews.values());
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = new HashMap<>();
+        for (Review review : reviews) {
+            this.reviews.put(review.getUserID(), review);
+        }
+    }
+
+    public String describe() {
+        return "id=" + uuid + ", title='" + title + "', releaseYear=" + releaseYear +
+                ", duration=" + duration + " min, genres=" + genres + ", director='" + directorName + "'" +
+                ", cast=" + cast + ", keywords=" + keywords + ", rating=" + (ratingCount > 0 ? ratingAverage : "none") +
+                " (" + ratingCount + " reviews)";
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" + describe() + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Movie movie)) return false;
+        return Objects.equals(uuid, movie.uuid) && Objects.equals(title, movie.title) && Objects.equals(releaseYear, movie.releaseYear);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, title, releaseYear);
+    }
+}
+
