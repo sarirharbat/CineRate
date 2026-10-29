@@ -182,7 +182,7 @@ public class User {
 
     public void addToWatchlist(UUID movieID) {
         if (watchlist.contains(movieID)) {
-            throw new IllegalStateException("Movie " + movieID + " is already in the watchlsit of " + username);
+            throw new IllegalStateException("Movie " + movieID + " is already in the watchlist of " + username);
         }
         System.out.println("addToWatchlist " + movieID + " pour " + username);
         watchlist.add(movieID);
