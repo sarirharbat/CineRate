@@ -1,5 +1,7 @@
 package ch.unil.doplab.cinerate.domain;
 
+import jakarta.json.bind.annotation.JsonbTransient;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -124,6 +126,7 @@ public class User {
         this.username = username;
     }
 
+    @JsonbTransient
     public String getPassword() {
         return password;
     }
