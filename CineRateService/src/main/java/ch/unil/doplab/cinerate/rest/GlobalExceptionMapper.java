@@ -1,0 +1,36 @@
+package ch.unil.doplab.cinerate.rest;
+
+import ch.unil.doplab.cinerate.domain.ExceptionDescription;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
+
+@Provider
+public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
+    private static final Logger log = Logger.getLogger(GlobalExceptionMapper.class.getName());
+
+    @Override
+    public Response toResponse(Exception exception) {
+        log.severe("Exception caught: " + exception.getMessage());
+
+        ExceptionDescription description = new ExceptionDescription(
+                exception.getClass().getName(),
+                exception.getMessage()
+        );
+
+        Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
+        if (exception instanceof IllegalArgumentException) {
+            status = Response.Status.BAD_REQUEST;
+        }
+        if (exception instanceof NoSuchElementException) {
+            status = Response.Status.NOT_FOUND;
+        }
+
+        return Response
+                .status(status)
+                .entity(description)
+                .build();
+    }
+}
