@@ -28,7 +28,7 @@ Phase 1 is the domain model and the web service.
    - Server: user `admin`, password `admin`
    - Deployment: `CineRateService:war`
    - Startup/Connection: Debug, Socket, port `9009`
-5. Click the green arow to deploy.
+5. Click the green arrow to deploy.
 6. In Postman, import `CineRateService/CineRate.postman_collection.json` and run the collection.
 
 The API is here: http://localhost:8080/CineRateService-1.0-SNAPSHOT/api

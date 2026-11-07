@@ -18,7 +18,6 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> getAllUsers() {
-        System.out.println("GET /users");
         // return state.getAllUsers().values().stream().toList();
         return new ArrayList<>(state.getAllUsers().values());
     }
