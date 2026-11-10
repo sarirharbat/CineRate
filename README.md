@@ -45,8 +45,7 @@ The API is here: http://localhost:8080/CineRateService-1.0-SNAPSHOT/api
 A user needs a username (not already taken), a first name, a last name, an email with an `@`
 and a password of at least 6 characters. The password is hashed and is never sent back.
 
-An error comes back with a JSON with its `type` and its `message`, and with the status 400 if the data
-is not valid, 404 if the user does not exist, or 500 for the rest.
+Like in StudyBuddy, an error comes back with the status 500 and a JSON with its `type` and its `message`.
 
 ## Demo users
 

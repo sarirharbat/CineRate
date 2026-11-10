@@ -49,7 +49,7 @@ public class ApplicationState {
     public boolean setUser(UUID uuid, User user) {
         var theUser = users.get(uuid);
         if (theUser == null) {
-            throw new NoSuchElementException("User " + uuid + " was not found");
+            return false;
         }
         var username = user.getUsername();
         if (username == null || username.isBlank()) {
@@ -78,7 +78,7 @@ public class ApplicationState {
     public boolean removeUser(UUID uuid) {
         var user = users.get(uuid);
         if (user == null) {
-            throw new NoSuchElementException("User " + uuid + " was not found");
+            return false;
         }
         // TODO (person 4): supprimer aussi les reviews de l'utilisateur
         usernames.remove(user.getUsername());
@@ -87,11 +87,7 @@ public class ApplicationState {
     }
 
     public User getUser(UUID uuid) {
-        var user = users.get(uuid);
-        if (user == null) {
-            throw new NoSuchElementException("User " + uuid + " was not found");
-        }
-        return user;
+        return users.get(uuid);
     }
 
     public Map<UUID, User> getAllUsers() {
