@@ -48,7 +48,7 @@ class ReviewTest {
     void testPostFailure_NoRating() {
         printMethodName();
         var empty = new Review(Rating.NO_RATING, "No stars");
-        Exception e = assertThrows(IllegalStateException.class, () -> empty.post(alice, inception));
+        Exception e = assertThrows(IllegalArgumentException.class, () -> empty.post(alice, inception));
         assertTrue(e.getMessage().contains("between 1 and 10"));
     }
 
@@ -56,7 +56,7 @@ class ReviewTest {
     void testPostFailure_CommentTooLong() {
         printMethodName();
         var longReview = new Review(Rating.FIVE, "a".repeat(Review.maxCommentLength + 1));
-        Exception e = assertThrows(IllegalStateException.class, () -> longReview.post(alice, inception));
+        Exception e = assertThrows(IllegalArgumentException.class, () -> longReview.post(alice, inception));
         assertTrue(e.getMessage().contains("longer than"));
     }
 
@@ -100,6 +100,14 @@ class ReviewTest {
     void testDeleteFailure_NotPosted() {
         printMethodName();
         assertThrows(IllegalStateException.class, () -> review.delete(alice, inception));
+    }
+
+    @Test
+    void testRatingIsANumber() {
+        printMethodName();
+        assertEquals(8, review.getRating());
+        review.setRating(3);
+        assertEquals(3, review.getRating());
     }
 
     @Test

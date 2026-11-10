@@ -86,12 +86,12 @@ public class Review {
         this.movieTitle = movie.getTitle();
     }
 
-    public Rating getRating() {
-        return rating;
+    public int getRating() {
+        return rating == null ? Rating.NO_RATING.getValue() : rating.getValue();
     }
 
-    public void setRating(Rating rating) {
-        this.rating = rating;
+    public void setRating(int value) {
+        this.rating = Rating.fromValue(value);
     }
 
     public String getComment() {
@@ -116,10 +116,10 @@ public class Review {
 
     private void checkContent(Rating rating, String comment) {
         if (rating == null || rating.getValue() < Movie.minRating || rating.getValue() > Movie.maxRating) {
-            throw new IllegalStateException("Rating must be between " + Movie.minRating + " and " + Movie.maxRating);
+            throw new IllegalArgumentException("Rating must be between " + Movie.minRating + " and " + Movie.maxRating);
         }
         if (comment != null && comment.length() > maxCommentLength) {
-            throw new IllegalStateException("Comment must not be longer than " + maxCommentLength + " characters");
+            throw new IllegalArgumentException("Comment must not be longer than " + maxCommentLength + " characters");
         }
     }
 
@@ -192,12 +192,12 @@ public class Review {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Review review)) return false;
-        return Objects.equals(uuid, review.uuid) && Objects.equals(userID, review.userID) && Objects.equals(movieID, review.movieID);
+        return Objects.equals(uuid, review.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, userID, movieID);
+        return Objects.hash(uuid);
     }
 }
 

@@ -1,8 +1,7 @@
 package ch.unil.doplab.cinerate.domain;
 
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class Person {
 
@@ -11,6 +10,7 @@ public class Person {
     private String lastName;
     private LocalDate birthDate;
     private String nationality;
+    private Set<UUID> movies;
 
     public Person() {
         this(null, null, null, null);
@@ -28,9 +28,16 @@ public class Person {
         this.uuid = uuid;
         this.firstName = firstName;
         this.lastName = lastName;
-        // TODO: vérifier que la date de naissance n'est pas dans le futur
+        checkBirthDate(birthDate);
         this.birthDate = birthDate;
         this.nationality = nationality;
+        this.movies = new HashSet<>();
+    }
+
+    private void checkBirthDate(LocalDate birthDate) {
+        if (birthDate != null && birthDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Birth date must not be in the future");
+        }
     }
 
     public void replaceWith(Person person) {
@@ -41,14 +48,12 @@ public class Person {
         this.lastName = person.lastName;
         this.birthDate = person.birthDate;
         this.nationality = person.nationality;
+        this.movies = new HashSet<>(person.movies);
     }
 
     public void mergeWith(Person person) {
         if (person == null) {
             throw new IllegalArgumentException("Person must not be null");
-        }
-        if (person.uuid != null) {
-            this.uuid = person.uuid;
         }
         if (person.firstName != null) {
             this.firstName = person.firstName;
@@ -61,6 +66,9 @@ public class Person {
         }
         if (person.nationality != null) {
             this.nationality = person.nationality;
+        }
+        if (!person.movies.isEmpty()) {
+            this.movies.addAll(person.movies);
         }
     }
 
@@ -97,6 +105,7 @@ public class Person {
     }
 
     public void setBirthDate(LocalDate birthDate) {
+        checkBirthDate(birthDate);
         this.birthDate = birthDate;
     }
 
@@ -108,9 +117,30 @@ public class Person {
         this.nationality = nationality;
     }
 
+    public void addMovie(UUID movieID) {
+        movies.add(movieID);
+    }
+
+    public void removeMovie(UUID movieID) {
+        movies.remove(movieID);
+    }
+
+    public boolean hasMovie(UUID movieID) {
+        return movies.contains(movieID);
+    }
+
+    public List<UUID> getMovies() {
+        return new ArrayList<>(movies);
+    }
+
+    public void setMovies(List<UUID> movies) {
+        this.movies = new HashSet<>(movies);
+    }
+
     public String describe() {
         return "id=" + this.uuid + ", firstName='" + this.firstName + "', lastName='" + this.lastName + "'" +
-                ", birthDate=" + this.birthDate + ", nationality='" + this.nationality + "'";
+                ", birthDate=" + this.birthDate + ", nationality='" + this.nationality + "'" +
+                ", movies=" + this.movies;
     }
 
     public String toString() {
@@ -121,12 +151,12 @@ public class Person {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Person person)) return false;
-        return Objects.equals(uuid, person.uuid) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName);
+        return Objects.equals(uuid, person.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, firstName, lastName);
+        return Objects.hash(uuid);
     }
 }
 

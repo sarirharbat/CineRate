@@ -53,6 +53,24 @@ class PersonTest {
     }
 
     @Test
+    void testMergeWithKeepsUUID() {
+        printMethodName();
+        var uuid = person.getUUID();
+        var patch = new Person(UUID.randomUUID(), "Greta", null, null, null);
+        person.mergeWith(patch);
+        assertEquals(uuid, person.getUUID());
+        assertEquals("Greta", person.getFirstName());
+    }
+
+    @Test
+    void testBirthDateInFutureFails() {
+        printMethodName();
+        var future = LocalDate.now().plusDays(1);
+        assertThrows(IllegalArgumentException.class, () -> new Person("Greta", "Gerwig", future, null));
+        assertThrows(IllegalArgumentException.class, () -> person.setBirthDate(future));
+    }
+
+    @Test
     void testEquals() {
         printMethodName();
         var copy = new Person(person.getUUID(), "Sofia", "Coppola", null, null);

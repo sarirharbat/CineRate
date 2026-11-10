@@ -55,7 +55,6 @@ public class Movie {
         this.directorName = null;
         this.cast = new ArrayList<>();
         this.keywords = new TreeSet<>();
-        // this.ratingAverage = 0;
         this.ratingAverage = noRating;
         this.ratingCount = 0;
         this.reviews = new HashMap<>();
@@ -70,19 +69,16 @@ public class Movie {
         this.synopsis = movie.synopsis;
         this.duration = movie.duration;
         this.posterUrl = movie.posterUrl;
-        this.genres = movie.genres;
+        this.genres = new HashSet<>(movie.genres);
         this.directorID = movie.directorID;
         this.directorName = movie.directorName;
-        this.cast = movie.cast;
-        this.keywords = movie.keywords;
+        this.cast = new ArrayList<>(movie.cast);
+        this.keywords = new TreeSet<>(movie.keywords);
     }
 
     public void mergeWith(Movie movie) {
         if (movie == null) {
             throw new IllegalArgumentException("Movie must not be null");
-        }
-        if (movie.uuid != null) {
-            this.uuid = movie.uuid;
         }
         if (movie.title != null) {
             this.title = movie.title;
@@ -109,7 +105,7 @@ public class Movie {
             this.directorName = movie.directorName;
         }
         if (!movie.cast.isEmpty()) {
-            this.cast = movie.cast;
+            this.cast = new ArrayList<>(movie.cast);
         }
         if (!movie.keywords.isEmpty()) {
             this.keywords.addAll(movie.keywords);
@@ -230,11 +226,11 @@ public class Movie {
     }
 
     public List<UUID> getCast() {
-        return cast;
+        return new ArrayList<>(cast);
     }
 
     public void setCast(List<UUID> cast) {
-        this.cast = cast;
+        this.cast = new ArrayList<>(cast);
     }
 
     public void addActor(Actor actor) {
@@ -362,12 +358,12 @@ public class Movie {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Movie movie)) return false;
-        return Objects.equals(uuid, movie.uuid) && Objects.equals(title, movie.title) && Objects.equals(releaseYear, movie.releaseYear);
+        return Objects.equals(uuid, movie.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, title, releaseYear);
+        return Objects.hash(uuid);
     }
 }
 

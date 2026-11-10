@@ -56,16 +56,13 @@ public class User {
         if (user.password != null) {
             this.password = user.password;
         }
-        this.watchlist = user.watchlist;
-        this.watchedMovies = user.watchedMovies;
+        this.watchlist = new HashSet<>(user.watchlist);
+        this.watchedMovies = new HashSet<>(user.watchedMovies);
     }
 
     public void mergeWith(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User must not be null");
-        }
-        if (user.uuid != null) {
-            this.uuid = user.uuid;
         }
         if (user.firstName != null) {
             this.firstName = user.firstName;
@@ -259,12 +256,12 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return Objects.equals(uuid, user.uuid) && Objects.equals(username, user.username) && Objects.equals(email, user.email);
+        return Objects.equals(uuid, user.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, username, email);
+        return Objects.hash(uuid);
     }
 }
 
