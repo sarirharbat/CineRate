@@ -2,6 +2,8 @@ package ch.unil.doplab.cinerate.domain;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+
+import java.time.LocalDate;
 import java.util.*;
 
 @ApplicationScoped
@@ -13,7 +15,7 @@ public class ApplicationState {
     @PostConstruct
     public void init() {
         users = new TreeMap<>();
-        usernames = new TreeMap<>();
+        usernames = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         populateApplicationState();
     }
 
@@ -30,7 +32,6 @@ public class ApplicationState {
         if (usernames.containsKey(username)) {
             throw new IllegalArgumentException("A user named '" + username + "' already exists");
         }
-        System.out.println("addUser: " + username);
         checkNames(user);
         checkEmail(user.getEmail());
         if (user.getPassword() == null) {
@@ -41,6 +42,8 @@ public class ApplicationState {
         user.setUUID(uuid);
         // a new user is always a member, never an administrator
         user.setRole(Utils.memberRole);
+        // the registration date is always set by the service
+        user.setRegistrationDate(LocalDate.now());
         users.put(uuid, user);
         usernames.put(username, uuid);
         return user;
@@ -55,7 +58,7 @@ public class ApplicationState {
         if (username == null || username.isBlank()) {
             throw new IllegalArgumentException("User must have a username");
         }
-        if (!theUser.getUsername().equals(username) &&
+        if (!theUser.getUsername().equalsIgnoreCase(username) &&
                 usernames.get(username) != null &&
                 !usernames.get(username).equals(uuid)) {
             throw new IllegalArgumentException("A user named '" + username + "' already exists");
@@ -66,7 +69,7 @@ public class ApplicationState {
             checkPassword(user.getPassword());
             user.setPassword(Utils.hashPassword(user.getPassword()));
         }
-        // the watchlist is changed with its own requets (person 4): it is kept
+        // the watchlist is changed with its own requests (person 4): it is kept
         user.setWatchlist(theUser.getWatchlist());
         user.setWatchedMovies(theUser.getWatchedMovies());
         usernames.remove(theUser.getUsername());
@@ -91,7 +94,22 @@ public class ApplicationState {
     }
 
     public Map<UUID, User> getAllUsers() {
-        return users;
+        return new TreeMap<>(users);
+    }
+
+    public User login(String username, String password) {
+        if (username == null || password == null) {
+            return null;
+        }
+        var uuid = usernames.get(username);
+        if (uuid == null) {
+            return null;
+        }
+        var user = users.get(uuid);
+        if (!user.checkPassword(password)) {
+            return null;
+        }
+        return user;
     }
 
     private void checkNames(User user) {
