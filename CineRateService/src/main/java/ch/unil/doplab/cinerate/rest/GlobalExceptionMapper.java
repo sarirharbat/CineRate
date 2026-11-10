@@ -19,8 +19,13 @@ public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
                 exception.getMessage()
         );
 
+        Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
+        if (exception instanceof IllegalArgumentException) {
+            status = Response.Status.BAD_REQUEST;
+        }
+
         return Response
-                .status(Response.Status.INTERNAL_SERVER_ERROR)
+                .status(status)
                 .entity(description)
                 .build();
     }

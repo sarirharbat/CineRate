@@ -40,12 +40,24 @@ The API is here: http://localhost:8080/CineRateService-1.0-SNAPSHOT/api
 - `POST /users`: add a user
 - `PUT /users/{id}`: change a user (the ID and the role stay the same)
 - `DELETE /users/{id}`: delete a user
+- `POST /users/login`: log in with a username and a password
 - `GET /service/reset`: go back to the demo users
 
 A user needs a username (not already taken), a first name, a last name, an email with an `@`
 and a password of at least 6 characters. The password is hashed and is never sent back.
 
-Like in StudyBuddy, an error comes back with the status 500 and a JSON with its `type` and its `message`.
+A username is the same with or without capital letters (`Alice` and `alice` are the same user).
+
+The service answers with these status codes:
+
+- `200`: OK
+- `201`: the user was created
+- `400`: the data is not valid (for example a username already taken or an email without `@`)
+- `401`: wrong username or password at login
+- `404`: the user does not exist
+- `500`: any other error
+
+An error with a message comes back as a JSON with its `type` and its `message`.
 
 ## Demo users
 
