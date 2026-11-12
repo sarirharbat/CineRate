@@ -83,10 +83,6 @@ public class WatchlistResource {
             throw new NotFoundException("No user with ID " + userId);
         }
 
-        if (!user.isInWatchlist(movieId)) {
-            throw new IllegalStateException("Movie is not in the watchlist");
-        }
-
         user.markAsUnwatched(movieId);
         return true;
     }

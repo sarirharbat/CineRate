@@ -120,9 +120,6 @@ public class ApplicationState {
         usernames.remove(user.getUsername());
         users.remove(uuid);
         return true;
-        usernames.remove(user.getUsername());
-        users.remove(uuid);
-        return true;
     }
 
     public User getUser(UUID uuid) {
