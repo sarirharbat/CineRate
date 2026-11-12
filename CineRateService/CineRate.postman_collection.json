@@ -223,6 +223,1217 @@
 			]
 		},
 		{
+			"name": "Movie",
+			"item": [
+				{
+					"name": "Movie search",
+					"item": [
+						{
+							"name": "Search without active criteria",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Contains the demo movies\", function () {",
+											"    const titles = pm.response.json().map(m => m.title);",
+											"    pm.expect(titles).to.include.members([\"Inception\", \"Shutter Island\", \"A Nightmare on Elm Street\"]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?title=&actor=&keyword=",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": ""
+										},
+										{
+											"key": "actor",
+											"value": ""
+										},
+										{
+											"key": "keyword",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search by title",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Returns exactly Inception\", function () {",
+											"    const titles = pm.response.json().map(m => m.title).sort();",
+											"    pm.expect(titles).to.eql([\"Inception\"]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?title=incep",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "incep"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search by actor",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Returns exactly Inception, Shutter Island\", function () {",
+											"    const titles = pm.response.json().map(m => m.title).sort();",
+											"    pm.expect(titles).to.eql([\"Inception\", \"Shutter Island\"]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?actor=leonardo%20dicaprio",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "actor",
+											"value": "leonardo%20dicaprio"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search by director",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Returns exactly A Nightmare on Elm Street\", function () {",
+											"    const titles = pm.response.json().map(m => m.title).sort();",
+											"    pm.expect(titles).to.eql([\"A Nightmare on Elm Street\"]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?director=WES%20CRAVEN",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "director",
+											"value": "WES%20CRAVEN"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search by genre",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Returns exactly Inception\", function () {",
+											"    const titles = pm.response.json().map(m => m.title).sort();",
+											"    pm.expect(titles).to.eql([\"Inception\"]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?genre=Science%20Fiction",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "genre",
+											"value": "Science%20Fiction"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search by keyword",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Returns exactly A Nightmare on Elm Street, Inception\", function () {",
+											"    const titles = pm.response.json().map(m => m.title).sort();",
+											"    pm.expect(titles).to.eql([\"A Nightmare on Elm Street\", \"Inception\"]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?keyword=DREAM",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "DREAM"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search actor + theme (Inception only)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Returns exactly Inception\", function () {",
+											"    const titles = pm.response.json().map(m => m.title).sort();",
+											"    pm.expect(titles).to.eql([\"Inception\"]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?actor=leonardo%20dicaprio&keyword=DREAM",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "actor",
+											"value": "leonardo%20dicaprio"
+										},
+										{
+											"key": "keyword",
+											"value": "DREAM"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search combination without result",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Returns exactly no movie\", function () {",
+											"    const titles = pm.response.json().map(m => m.title).sort();",
+											"    pm.expect(titles).to.eql([]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?actor=Leonardo%20DiCaprio&genre=Horror",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "actor",
+											"value": "Leonardo%20DiCaprio"
+										},
+										{
+											"key": "genre",
+											"value": "Horror"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search unknown actor",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Returns exactly no movie\", function () {",
+											"    const titles = pm.response.json().map(m => m.title).sort();",
+											"    pm.expect(titles).to.eql([]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?actor=Nobody%20Known",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "actor",
+											"value": "Nobody%20Known"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Movie CRUD",
+					"item": [
+						{
+							"name": "Get all movies",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Contains the demo movies\", function () {",
+											"    const titles = pm.response.json().map(m => m.title);",
+											"    pm.expect(titles).to.include.members([\"Inception\", \"Shutter Island\", \"A Nightmare on Elm Street\"]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Inception by id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Inception with its director\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.title).to.eql(\"Inception\");",
+											"    pm.expect(body.directorName).to.eql(\"Christopher Nolan\");",
+											"    pm.expect(body.cast.length).to.eql(2);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/{{inception-id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"{{inception-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"const idOf = m => m[Object.keys(m).find(k => k.toLowerCase() === \"uuid\")];",
+											"pm.test(\"Movie created with an id generated by the service\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.title).to.eql(\"Memento\");",
+											"    pm.expect(body.directorName).to.eql(\"Christopher Nolan\");",
+											"    pm.expect(idOf(body)).to.match(/^[0-9a-f-]{36}$/);",
+											"    pm.collectionVariables.set(\"new-movie-id\", idOf(body));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Memento\",\n    \"releaseYear\": 2000,\n    \"duration\": 113,\n    \"synopsis\": \"A man with short-term memory loss searches for the person who attacked his wife.\",\n    \"genres\": [\n        \"Thriller\",\n        \"Mystery\"\n    ],\n    \"directorID\": \"30000000-0000-0000-0000-000000000001\",\n    \"cast\": [],\n    \"keywords\": [\n        \"memory\"\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get created movie",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"const idOf = m => m[Object.keys(m).find(k => k.toLowerCase() === \"uuid\")];",
+											"pm.test(\"Same movie\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(idOf(body)).to.eql(pm.collectionVariables.get(\"new-movie-id\"));",
+											"    pm.expect(body.title).to.eql(\"Memento\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/{{new-movie-id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"{{new-movie-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update created movie",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"const idOf = m => m[Object.keys(m).find(k => k.toLowerCase() === \"uuid\")];",
+											"pm.test(\"Updated with the same id\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(idOf(body)).to.eql(pm.collectionVariables.get(\"new-movie-id\"));",
+											"    pm.expect(body.title).to.eql(\"Memento (restored)\");",
+											"    pm.expect(body.directorName == null).to.be.true;",
+											"    pm.expect(body.cast.length).to.eql(1);",
+											"    pm.expect(body.keywords).to.eql([\"memory\", \"tattoo\"]);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/{{new-movie-id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"{{new-movie-id}}"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Memento (restored)\",\n    \"releaseYear\": 2000,\n    \"duration\": 113,\n    \"synopsis\": \"A man with short-term memory loss searches for the person who attacked his wife.\",\n    \"genres\": [\n        \"Thriller\"\n    ],\n    \"directorID\": null,\n    \"cast\": [\n        \"20000000-0000-0000-0000-000000000002\"\n    ],\n    \"keywords\": [\n        \"memory\",\n        \"tattoo\"\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete created movie",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/{{new-movie-id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"{{new-movie-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get deleted movie",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.type).to.include(\"NotFoundException\");",
+											"    pm.expect(body.message).to.be.a(\"string\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/{{new-movie-id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"{{new-movie-id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Movie errors",
+					"item": [
+						{
+							"name": "Search with unknown genre",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.type).to.include(\"IllegalArgumentException\");",
+											"    pm.expect(body.message).to.be.a(\"string\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/search?genre=Cartoon",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"search"
+									],
+									"query": [
+										{
+											"key": "genre",
+											"value": "Cartoon"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get movie with malformed id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.type).to.include(\"IllegalArgumentException\");",
+											"    pm.expect(body.message).to.be.a(\"string\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/not-a-uuid",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"not-a-uuid"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get missing movie",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.type).to.include(\"NotFoundException\");",
+											"    pm.expect(body.message).to.be.a(\"string\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/00000000-0000-0000-0000-000000000000",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"00000000-0000-0000-0000-000000000000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie without title",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.type).to.include(\"IllegalArgumentException\");",
+											"    pm.expect(body.message).to.be.a(\"string\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"   \",\n    \"releaseYear\": 2000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie with negative duration",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.type).to.include(\"IllegalArgumentException\");",
+											"    pm.expect(body.message).to.be.a(\"string\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Memento\",\n    \"releaseYear\": 2000,\n    \"duration\": -5\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie with unknown actor",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.type).to.include(\"IllegalArgumentException\");",
+											"    pm.expect(body.message).to.be.a(\"string\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Memento\",\n    \"releaseYear\": 2000,\n    \"cast\": [\n        \"99999999-9999-9999-9999-999999999999\"\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Inception with invalid genre",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.type).to.include(\"IllegalArgumentException\");",
+											"    pm.expect(body.message).to.be.a(\"string\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/{{inception-id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"{{inception-id}}"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Changed\",\n    \"releaseYear\": 2000,\n    \"duration\": 113,\n    \"synopsis\": \"A man with short-term memory loss searches for the person who attacked his wife.\",\n    \"genres\": [\n        \"Cartoon\"\n    ],\n    \"directorID\": \"30000000-0000-0000-0000-000000000001\",\n    \"cast\": [\n        \"20000000-0000-0000-0000-000000000002\"\n    ],\n    \"keywords\": [\n        \"memory\",\n        \"tattoo\"\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inception unchanged after invalid update",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"Title, director and cast are unchanged\", function () {",
+											"    const body = pm.response.json();",
+											"    pm.expect(body.title).to.eql(\"Inception\");",
+											"    pm.expect(body.directorName).to.eql(\"Christopher Nolan\");",
+											"    pm.expect(body.cast.length).to.eql(2);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies/{{inception-id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies",
+										"{{inception-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie with malformed JSON",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    pm.expect(pm.response.json().type).to.include(\"ProcessingException\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Memento\",\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie with text release year",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error described with type and message\", function () {",
+											"    pm.expect(pm.response.json().type).to.include(\"ProcessingException\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Memento\",\n    \"releaseYear\": \"two thousand\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie with decimal release year",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error names the property\", function () {",
+											"    const error = pm.response.json();",
+											"    pm.expect(error.type).to.include(\"ProcessingException\");",
+											"    pm.expect(error.message).to.include(\"releaseYear\");",
+											"    pm.expect(error.message).to.include(\"whole number\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Memento\",\n    \"releaseYear\": 2000.5\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add movie with too large release year",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Error names the property\", function () {",
+											"    const error = pm.response.json();",
+											"    pm.expect(error.type).to.include(\"ProcessingException\");",
+											"    pm.expect(error.message).to.include(\"releaseYear\");",
+											"    pm.expect(error.message).to.include(\"whole number\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								},
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Memento\",\n    \"releaseYear\": 99999999999\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Catalogue unchanged after refused requests",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test(\"No movie was created by the refused requests\", function () {",
+											"    pm.expect(pm.response.json().length).to.eql(3);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/movies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "Errors",
 			"item": [
 				{
@@ -451,6 +1662,39 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Unknown route",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test(\"Error described with type and message\", function () {",
+									"    pm.expect(pm.response.json().type).to.include(\"NotFoundException\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/nothing",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"nothing"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -487,6 +1731,73 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Movies after reset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Demo catalogue restored\", function () {",
+									"    const titles = pm.response.json().map(m => m.title).sort();",
+									"    pm.expect(titles).to.eql([\"A Nightmare on Elm Street\", \"Inception\", \"Shutter Island\"]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/movies",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"movies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users after reset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Demo users restored\", function () {",
+									"    pm.expect(pm.response.json().length).to.eql(3);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
@@ -499,6 +1810,16 @@
 		{
 			"key": "user-id",
 			"value": "f6a10b0a-c25f-4b6e-81b4-227a28fdda4e",
+			"type": "string"
+		},
+		{
+			"key": "inception-id",
+			"value": "10000000-0000-0000-0000-000000000001",
+			"type": "string"
+		},
+		{
+			"key": "new-movie-id",
+			"value": "",
 			"type": "string"
 		}
 	]

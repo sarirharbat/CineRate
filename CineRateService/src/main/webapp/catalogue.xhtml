@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="primefaces">
+<h:head>
+    <title>CineRate · Movie Catalogue</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <h:outputStylesheet name="css/cinerate.css"/>
+</h:head>
+<h:body>
+    <header class="cr-topbar">
+        <div class="cr-container cr-topbar-inner">
+            <span class="cr-brand">Cine<span>Rate</span></span>
+            <nav class="cr-nav">
+                <a class="cr-nav-active" href="catalogue.xhtml">Catalogue</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cr-container">
+        <h:form id="catalogue">
+            <p:messages id="messages" closable="true"/>
+            <p:staticMessage severity="warn" summary="Search refused" detail="#{catalogueBean.warning}"
+                             rendered="#{not empty catalogueBean.warning}" style="width: 100%; margin-bottom: 16px"/>
+
+            <section class="cr-card">
+                <h1>Movie Catalogue</h1>
+                <p class="cr-hint">
+                    Don't remember the title? Combine clues, for example the actor
+                    <em>Leonardo DiCaprio</em> and the theme <em>dream</em>.
+                </p>
+
+                <div class="cr-filters">
+                    <div class="cr-field">
+                        <p:outputLabel for="title" value="Title"/>
+                        <p:inputText id="title" value="#{catalogueBean.title}" placeholder="Part of the title"/>
+                    </div>
+                    <div class="cr-field">
+                        <p:outputLabel for="actor" value="Actor"/>
+                        <p:inputText id="actor" value="#{catalogueBean.actor}" placeholder="Full name"/>
+                    </div>
+                    <div class="cr-field">
+                        <p:outputLabel for="director" value="Director"/>
+                        <p:inputText id="director" value="#{catalogueBean.director}" placeholder="Full name"/>
+                    </div>
+                    <div class="cr-field">
+                        <p:outputLabel for="keyword" value="Theme"/>
+                        <p:inputText id="keyword" value="#{catalogueBean.keyword}" placeholder="Keyword, e.g. dream"/>
+                    </div>
+                    <div class="cr-field">
+                        <p:outputLabel for="genre" value="Genre"/>
+                        <p:selectOneMenu id="genre" value="#{catalogueBean.genre}">
+                            <f:selectItem itemLabel="Select genre..." itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{catalogueBean.genres}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="cr-field">
+                        <p:outputLabel for="year" value="Year"/>
+                        <p:selectOneMenu id="year" value="#{catalogueBean.year}">
+                            <f:selectItem itemLabel="Select year..." itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{catalogueBean.years}"/>
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+
+                <div class="cr-actions">
+                    <p:commandButton id="search" value="Search" icon="pi pi-search"
+                                     action="#{catalogueBean.search}" update="@form"/>
+                    <p:commandButton id="reset" value="Reset" icon="pi pi-times" styleClass="ui-button-secondary"
+                                     action="#{catalogueBean.reset}" update="@form" process="@this"/>
+                    <p:defaultCommand target="search"/>
+                </div>
+            </section>
+
+            <section class="cr-card">
+                <p class="cr-count">
+                    <h:outputText value="#{catalogueBean.movies.size()} of #{catalogueBean.catalogueSize} movies"
+                                  rendered="#{catalogueBean.filtered}"/>
+                    <h:outputText value="#{catalogueBean.catalogueSize} movies in the catalogue"
+                                  rendered="#{not catalogueBean.filtered}"/>
+                </p>
+
+                <p:dataTable id="movies" value="#{catalogueBean.movies}" var="movie" rowKey="#{movie.id}"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             paginatorAlwaysVisible="false" sortMode="single" reflow="true"
+                             emptyMessage="No movie matches these criteria." styleClass="cr-table">
+                    <p:column headerText="Title" sortBy="#{movie.title}">
+                        <p:commandLink value="#{movie.title}" styleClass="cr-title-link"
+                                       update=":details:content" oncomplete="PF('detailsDialog').show()"
+                                       process="@this">
+                            <f:setPropertyActionListener value="#{movie}" target="#{catalogueBean.selectedMovie}"/>
+                        </p:commandLink>
+                    </p:column>
+                    <p:column headerText="Year" sortBy="#{movie.releaseYear}" styleClass="cr-col-year">
+                        <h:outputText value="#{movie.releaseYear}"/>
+                    </p:column>
+                    <p:column headerText="Genre">
+                        <h:outputText value="#{movie.genres}"/>
+                    </p:column>
+                    <p:column headerText="Director">
+                        <h:outputText value="#{movie.director}"/>
+                    </p:column>
+                    <p:column headerText="Avg. rating" sortBy="#{movie.ratingAverage}" styleClass="cr-col-rating">
+                        <h:outputText value="#{movie.formattedRating}"/>
+                    </p:column>
+                </p:dataTable>
+            </section>
+        </h:form>
+
+        <h:form id="details">
+            <p:dialog widgetVar="detailsDialog" modal="true" resizable="false" draggable="false"
+                      width="560" responsive="true" header="Movie details" closeOnEscape="true">
+                <h:panelGroup id="content" layout="block" styleClass="cr-details">
+                    <h:panelGroup rendered="#{catalogueBean.selectedMovie != null}">
+                        <h2>
+                            <h:outputText value="#{catalogueBean.selectedMovie.title}"/>
+                            <span class="cr-muted">
+                                (<h:outputText value="#{catalogueBean.selectedMovie.releaseYear}"/>)
+                            </span>
+                        </h2>
+                        <p class="cr-muted">
+                            <h:outputText value="#{catalogueBean.selectedMovie.duration} min · "
+                                          rendered="#{catalogueBean.selectedMovie.duration > 0}"/>
+                            <h:outputText value="#{catalogueBean.selectedMovie.genres}"/>
+                        </p>
+                        <p><h:outputText value="#{catalogueBean.selectedMovie.synopsis}"/></p>
+                        <dl>
+                            <dt>Director</dt>
+                            <dd><h:outputText value="#{empty catalogueBean.selectedMovie.director ? '—' : catalogueBean.selectedMovie.director}"/></dd>
+                            <dt>Cast</dt>
+                            <dd><h:outputText value="#{empty catalogueBean.selectedMovie.cast ? '—' : catalogueBean.selectedMovie.cast}"/></dd>
+                            <dt>Themes</dt>
+                            <dd><h:outputText value="#{empty catalogueBean.selectedMovie.keywords ? '—' : catalogueBean.selectedMovie.keywords}"/></dd>
+                            <dt>Average rating</dt>
+                            <dd>
+                                <h:outputText value="#{catalogueBean.selectedMovie.formattedRating}"/>
+                                <span class="cr-muted">
+                                    (<h:outputText value="#{catalogueBean.selectedMovie.ratingCount}"/> reviews)
+                                </span>
+                            </dd>
+                        </dl>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </p:dialog>
+        </h:form>
+    </main>
+</h:body>
+</html>
