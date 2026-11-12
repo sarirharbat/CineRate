@@ -83,7 +83,16 @@ public class ApplicationState {
         if (user == null) {
             return false;
         }
-        // TODO (person 4): supprimer aussi les reviews de l'utilisateur
+        for (Review review : user.getReviews()) {
+            Movie movie = getMovie(review.getMovieID());
+
+            if (movie != null) {
+                review.delete(user, movie);
+            }
+        }
+        usernames.remove(user.getUsername());
+        users.remove(uuid);
+        return true;
         usernames.remove(user.getUsername());
         users.remove(uuid);
         return true;
