@@ -37,8 +37,8 @@ public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
     }
 
     static int statusOf(Exception exception) {
-        if (exception instanceof IllegalArgumentException) {
-            // invalid data sent by the client
+        if (exception instanceof IllegalArgumentException ||
+                exception instanceof IllegalStateException) {            // invalid data sent by the client
             return Response.Status.BAD_REQUEST.getStatusCode();
         }
         if (exception instanceof WebApplicationException webException) {

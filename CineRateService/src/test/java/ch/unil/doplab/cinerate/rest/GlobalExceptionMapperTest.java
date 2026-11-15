@@ -49,6 +49,6 @@ class GlobalExceptionMapperTest {
     void testOtherErrorsAreServerErrors() {
         printMethodName();
         assertEquals(500, GlobalExceptionMapper.statusOf(new ProcessingException("Error serializing object to output stream.")));
-        assertEquals(500, GlobalExceptionMapper.statusOf(new IllegalStateException("Unexpected")));
+        assertEquals(400, GlobalExceptionMapper.statusOf(new IllegalStateException("Unexpected")));
     }
 }

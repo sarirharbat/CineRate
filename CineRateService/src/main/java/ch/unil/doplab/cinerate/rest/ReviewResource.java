@@ -5,6 +5,7 @@ import ch.unil.doplab.cinerate.domain.Review;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import ch.unil.doplab.cinerate.domain.User;
 import ch.unil.doplab.cinerate.domain.Movie;
 import ch.unil.doplab.cinerate.domain.Rating;
@@ -52,7 +53,7 @@ public class ReviewResource {
     @POST
     @Path("/{movieId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Review addReview(
+    public Response addReview(
             @PathParam("userId") UUID userId,
             @PathParam("movieId") UUID movieId,
             Review review) {
@@ -79,7 +80,7 @@ public class ReviewResource {
                 review.getComment());
 
         newReview.post(user, movie);
-        return newReview;
+        return Response.status(Response.Status.CREATED).entity(newReview).build();
     }
 
     @PUT
