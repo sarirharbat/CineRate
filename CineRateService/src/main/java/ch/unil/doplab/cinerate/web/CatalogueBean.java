@@ -11,13 +11,7 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.*;
 
-/**
- * Controller of the catalogue page (catalogue.xhtml).
- *
- * It reuses the search of the service (ApplicationState.searchMovies): the filled criteria are
- * combined with a logical AND and the empty ones are ignored. The release year, which the REST
- * search does not have, is filtered here.
- */
+// Klinsmann Kodra
 @Named
 @ViewScoped
 public class CatalogueBean implements Serializable {
@@ -41,7 +35,6 @@ public class CatalogueBean implements Serializable {
         search();
     }
 
-    /** Runs the search with the current criteria. */
     public void search() {
         warning = null;
         try {
@@ -53,13 +46,11 @@ public class CatalogueBean implements Serializable {
             }
             movies = rows;
         } catch (IllegalArgumentException e) {
-            // for example an unknown genre: the page shows the message of the service
             movies = new ArrayList<>();
             warning = e.getMessage();
         }
     }
 
-    /** Clears every criterion and shows the whole catalogue again. */
     public void reset() {
         title = null;
         actor = null;
@@ -75,7 +66,6 @@ public class CatalogueBean implements Serializable {
                 || year != null || !isBlank(keyword);
     }
 
-    /** Labels of the genres for the drop-down menu ("Science Fiction", ...). */
     public List<String> getGenres() {
         var labels = new ArrayList<String>();
         for (Genre g : Genre.values()) {
@@ -84,7 +74,6 @@ public class CatalogueBean implements Serializable {
         return labels;
     }
 
-    /** Release years present in the catalogue, the most recent first. */
     public List<Integer> getYears() {
         var years = new TreeSet<Integer>(Comparator.reverseOrder());
         for (Movie movie : state.getAllMovies().values()) {
@@ -129,7 +118,6 @@ public class CatalogueBean implements Serializable {
         return warning;
     }
 
-    // used by the unit tests, which run without CDI
     void setState(ApplicationState state) {
         this.state = state;
     }

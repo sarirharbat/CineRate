@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 @ApplicationScoped
 public class ApplicationState {
 
-    // Personne 3 : identifiants fixes du catalogue de demonstration.
+    // Klinsmann Kodra
     public static final UUID inceptionID = UUID.fromString("10000000-0000-0000-0000-000000000001");
     public static final UUID shutterIslandID = UUID.fromString("10000000-0000-0000-0000-000000000002");
     public static final UUID nightmareID = UUID.fromString("10000000-0000-0000-0000-000000000003");
@@ -26,16 +26,16 @@ public class ApplicationState {
     private static final Pattern uuidPattern =
             Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
+    // Mouhamed Sarira
     private Map<UUID, User> users;
     private Map<String, UUID> usernames;
 
-    // Personne 3 : catalogue indexe par UUID, et personnes de reference pour les liens
-    // et la recherche par nom. Les memes objets Movie servent au CRUD, a la recherche
-    // et aux avis.
+    // Klinsmann Kodra
     private Map<UUID, Movie> movies;
     private Map<UUID, Actor> actors;
     private Map<UUID, Director> directors;
 
+    // Mouhamed Sarira
     @PostConstruct
     public void init() {
         users = new TreeMap<>();
@@ -47,7 +47,6 @@ public class ApplicationState {
     }
 
     public User addUser(User user) {
-        // the ID of a new user is always created by the service
         return addUser(UUID.randomUUID(), user);
     }
 
@@ -67,9 +66,7 @@ public class ApplicationState {
         checkPassword(user.getPassword());
         user.setPassword(Utils.hashPassword(user.getPassword()));
         user.setUUID(uuid);
-        // a new user is always a member, never an administrator
         user.setRole(Utils.memberRole);
-        // the registration date is always set by the service
         user.setRegistrationDate(LocalDate.now());
         users.put(uuid, user);
         usernames.put(username, uuid);
@@ -96,7 +93,6 @@ public class ApplicationState {
             checkPassword(user.getPassword());
             user.setPassword(Utils.hashPassword(user.getPassword()));
         }
-        // the watchlist is changed with its own requests (person 4): it is kept
         user.setWatchlist(theUser.getWatchlist());
         user.setWatchedMovies(theUser.getWatchedMovies());
         usernames.remove(theUser.getUsername());
@@ -110,6 +106,7 @@ public class ApplicationState {
         if (user == null) {
             return false;
         }
+        // Samy Hajhouj
         for (Review review : user.getReviews()) {
             Movie movie = getMovie(review.getMovieID());
 
@@ -166,11 +163,7 @@ public class ApplicationState {
         }
     }
 
-    // =========================================================================
-    // Personne 3 : catalogue des films (CRUD)
-    // =========================================================================
-
-    /** Renvoie le film correspondant, ou null s'il n'existe pas. */
+    // Klinsmann Kodra
     public Movie getMovie(UUID movieId) {
         return movieId == null ? null : movies.get(movieId);
     }
@@ -188,7 +181,6 @@ public class ApplicationState {
     }
 
     public Movie addMovie(MovieData data) {
-        // the ID of a new movie is always created by the service
         return addMovie(UUID.randomUUID(), data);
     }
 
@@ -198,7 +190,6 @@ public class ApplicationState {
             throw new IllegalArgumentException("A movie with id '" + movieId + "' already exists");
         }
         var movie = new Movie();
-        // l'UUID est attribue avant de lier le film au realisateur et aux acteurs
         movie.setUUID(movieId);
         applyFields(movie, input);
         updateDirector(movie, input.director());
@@ -207,20 +198,11 @@ public class ApplicationState {
         return movie;
     }
 
-    /**
-     * PUT : remplace tous les champs modifiables du film stocke. Un champ facultatif
-     * absent (ou null) est remis a sa valeur vide : pas de synopsis, pas de realisateur,
-     * casting, genres ou mots-cles vides. Envoyer [] ou omettre la liste la vide.
-     * L'instance stockee est conservee : meme UUID, memes avis, memes notes.
-     *
-     * @return le film mis a jour, ou null si aucun film ne porte cet UUID
-     */
     public Movie setMovie(UUID movieId, MovieData data) {
         var movie = getMovie(movieId);
         if (movie == null) {
             return null;
         }
-        // tout est valide et resolu avant de toucher au film ou aux associations
         var input = checkMovieData(data);
         applyFields(movie, input);
         updateDirector(movie, input.director());
@@ -233,9 +215,7 @@ public class ApplicationState {
         if (movie == null) {
             return false;
         }
-        // 1. raccord Personne 4, tant que le film et les utilisateurs sont accessibles
         cleanUpMovieReferences(movie);
-        // 2. liens avec les acteurs et le realisateur (les deux cotes de la relation)
         for (UUID actorID : movie.getCast()) {
             var actor = actors.get(actorID);
             if (actor != null) {
@@ -246,31 +226,21 @@ public class ApplicationState {
         if (director != null) {
             movie.removeDirector(director);
         }
-        // 3. le film quitte le catalogue
         movies.remove(movieId);
         return true;
     }
 
-    /**
-     * Raccord avec la Personne 4 : nettoyage des avis et des watchlists quand un film
-     * est supprime. C'est le seul point d'entree de ce nettoyage ; il peut etre remplace
-     * par l'operation de la Personne 4 lors de l'integration. Il ne sert qu'a la
-     * suppression d'un film.
-     */
     void cleanUpMovieReferences(Movie movie) {
         var movieId = movie.getUUID();
         for (Review review : movie.getReviews()) {
             var author = review.getUserID() == null ? null : users.get(review.getUserID());
             if (author != null && author.hasReviewed(movieId)) {
-                // retire l'avis du film et de l'utilisateur, et recalcule la note du film
                 review.delete(author, movie);
             } else {
-                // l'auteur n'existe plus : l'avis est seulement retire du film
                 movie.removeReview(review);
             }
         }
         for (User user : users.values()) {
-            // markAsWatched deplace le film de watchlist vers watchedMovies : on verifie les deux
             if (user.isInWatchlist(movieId)) {
                 user.removeFromWatchlist(movieId);
             }
@@ -278,7 +248,6 @@ public class ApplicationState {
         }
     }
 
-    // Donnees du corps de requete, validees et resolues.
     private record MovieInput(String title, int releaseYear, int duration, String synopsis, String posterUrl,
                               List<Genre> genres, Director director, List<Actor> cast, List<String> keywords) {
     }
@@ -332,7 +301,6 @@ public class ApplicationState {
             if (isBlank(value)) {
                 throw new IllegalArgumentException("Keywords must not be empty");
             }
-            // meme normalisation qu'a la recherche : espaces retires ici, minuscules dans Movie
             keywords.add(value.trim());
         }
         var duration = data.getDuration() == null ? 0 : data.getDuration();
@@ -360,10 +328,8 @@ public class ApplicationState {
                 movie.setDirectorName(null);
             }
         } else if (!movie.isDirectedBy(newDirector.getUUID())) {
-            // retire aussi le film de la filmographie de l'ancien realisateur
             movie.setDirector(newDirector, oldDirector);
         } else {
-            // meme realisateur : le nom affiche reste derive de la personne
             movie.setDirectorName(newDirector.getFullName());
         }
     }
@@ -373,7 +339,6 @@ public class ApplicationState {
         for (Actor actor : newCast) {
             newIds.add(actor.getUUID());
         }
-        // retraits
         for (UUID actorId : movie.getCast()) {
             if (!newIds.contains(actorId)) {
                 var actor = actors.get(actorId);
@@ -386,19 +351,12 @@ public class ApplicationState {
                 }
             }
         }
-        // ajouts
         for (Actor actor : newCast) {
             if (!movie.hasActor(actor.getUUID())) {
                 movie.addActor(actor);
             }
         }
     }
-
-    // =========================================================================
-    // Personne 3 : recherche avancee
-    // Les criteres renseignes sont combines avec un ET logique. Un critere absent
-    // ou vide est ignore. Sans critere actif, tout le catalogue est renvoye.
-    // =========================================================================
 
     public List<Movie> searchMovies(String title, String actor, String director, String genre, String keyword) {
         var titleCriterion = clean(title) == null ? null : clean(title).toLowerCase(Locale.ROOT);
@@ -407,7 +365,6 @@ public class ApplicationState {
         var genreCriterion = clean(genre) == null ? null : parseGenre(genre);
         var keywordCriterion = clean(keyword);
 
-        // un nom inconnu donne un ensemble vide, donc aucun resultat
         var actorIds = actorCriterion == null ? null : findPeople(actors, actorCriterion);
         var directorIds = directorCriterion == null ? null : findPeople(directors, directorCriterion);
 
@@ -434,7 +391,6 @@ public class ApplicationState {
         return result;
     }
 
-    // Tous les UUID des personnes portant ce nom complet, sans distinction de casse.
     private <P extends Person> Set<UUID> findPeople(Map<UUID, P> people, String fullName) {
         var wanted = normalizeName(fullName);
         var ids = new HashSet<UUID>();
@@ -450,10 +406,6 @@ public class ApplicationState {
         return name.trim().replaceAll("\\s+", " ");
     }
 
-    /**
-     * Accepte le libelle d'un genre (Genre.fromLabel, par exemple "Science Fiction")
-     * ou le nom de la constante (par exemple "ScienceFiction"), sans distinction de casse.
-     */
     public static Genre parseGenre(String value) {
         if (isBlank(value)) {
             throw new IllegalArgumentException("Genres must not be empty");
@@ -479,7 +431,6 @@ public class ApplicationState {
         return String.join(", ", labels);
     }
 
-    /** Lit un UUID au format standard 8-4-4-4-12, sinon IllegalArgumentException (400). */
     public static UUID parseUUID(String value, String what) {
         if (value == null || !uuidPattern.matcher(value.trim()).matches()) {
             throw new IllegalArgumentException("Invalid " + what + " id: '" + value + "'");
@@ -503,10 +454,7 @@ public class ApplicationState {
         return values == null ? List.of() : values;
     }
 
-    // =========================================================================
-    // Donnees de demonstration
-    // =========================================================================
-
+    // Mouhamed Sarira
     private void populateApplicationState() {
         addUser(UUID.fromString("1ead1a6d-7d30-4e2d-96ad-37f620949a9b"), new User("Alice", "Martin", "alice@cinerate.ch", "alice", "alice123"));
         addUser(UUID.fromString("f6a10b0a-c25f-4b6e-81b4-227a28fdda4e"), new User("Bob", "Dupont", "bob@cinerate.ch", "bob", "bob12345"));
@@ -516,10 +464,7 @@ public class ApplicationState {
         populateCatalogue();
     }
 
-    // Catalogue deterministe (Personne 3). Aucun appel TMDB pour ce lot.
-    // Il permet de verifier que l'acteur et le theme sont reellement combines :
-    // DiCaprio joue dans Inception et Shutter Island, le mot-cle "dream" concerne
-    // Inception et A Nightmare on Elm Street ; seul Inception reunit les deux.
+    // Klinsmann Kodra
     private void populateCatalogue() {
         addDirector(new Director(nolanID, "Christopher", "Nolan", null, "British"));
         addDirector(new Director(scorseseID, "Martin", "Scorsese", null, "American"));
@@ -545,7 +490,6 @@ public class ApplicationState {
                 List.of("Horror"), List.of("dream", "slasher")));
     }
 
-    // Personnes de reference : pas de route REST dans ce lot, utilisees par la demo et les tests.
     void addActor(Actor actor) {
         actors.put(actor.getUUID(), actor);
     }

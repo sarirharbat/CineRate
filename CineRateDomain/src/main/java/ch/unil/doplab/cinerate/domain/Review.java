@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+// Elias Mounerat
 public class Review {
 
     public static final int maxCommentLength = 1000;

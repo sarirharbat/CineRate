@@ -54,7 +54,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- Personne 3 : JSON-B de Payara 6 (Yasson) pour tester la lecture des corps JSON -->
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
@@ -72,7 +71,6 @@
             <artifactId>CineRateDomain</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!-- First web page (catalogue): PrimeFaces components for the JSF pages -->
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
@@ -88,7 +86,6 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.5.1</version>
             </plugin>
-            <!-- Personne 3 : version explicite pour que Maven execute bien les tests JUnit 5 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

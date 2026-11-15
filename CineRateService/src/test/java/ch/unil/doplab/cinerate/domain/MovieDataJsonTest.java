@@ -12,9 +12,7 @@ import java.util.List;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Lecture du corps de POST /movies et PUT /movies/{id} avec le JSON-B de Payara 6 (Yasson).
- */
+// Klinsmann Kodra
 class MovieDataJsonTest {
 
     private static Jsonb jsonb;
@@ -66,7 +64,6 @@ class MovieDataJsonTest {
     @Test
     void testDecimalYearIsRefused() {
         printMethodName();
-        // sans le lecteur strict, JSON-B tronquait 2000.5 en 2000
         assertThrows(JsonbException.class, () -> read("{\"title\": \"X\", \"releaseYear\": 2000.5}"));
         assertThrows(JsonbException.class, () -> read("{\"title\": \"X\", \"releaseYear\": 2000, \"duration\": 90.5}"));
     }
@@ -74,7 +71,6 @@ class MovieDataJsonTest {
     @Test
     void testTooLargeNumberIsRefused() {
         printMethodName();
-        // sans le lecteur strict, 99999999999 devenait 1215752191
         assertThrows(JsonbException.class, () -> read("{\"title\": \"X\", \"releaseYear\": 99999999999}"));
         assertThrows(JsonbException.class, () -> read("{\"title\": \"X\", \"releaseYear\": 2000, \"duration\": 1e12}"));
     }

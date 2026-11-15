@@ -1,5 +1,6 @@
 package ch.unil.doplab.cinerate.domain;
 
+// Elias Mounerat
 public enum Genre {
     Action("Action"),
     Adventure("Adventure"),

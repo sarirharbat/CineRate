@@ -1,5 +1,3 @@
-/* CineRate - first web page (catalogue) */
-
 body {
     margin: 0;
     background: #f4f5f7;
@@ -14,7 +12,6 @@ body {
     box-sizing: border-box;
 }
 
-/* top bar */
 .cr-topbar {
     background: #1f2430;
     color: #ffffff;
@@ -49,7 +46,6 @@ body {
     border-bottom: 2px solid #f5b301;
 }
 
-/* cards */
 main.cr-container {
     padding-top: 24px;
     padding-bottom: 40px;
@@ -73,7 +69,6 @@ main.cr-container {
     color: #5c6370;
 }
 
-/* filters */
 .cr-filters {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -103,7 +98,6 @@ main.cr-container {
     gap: 10px;
 }
 
-/* results */
 .cr-count {
     margin: 0 0 12px;
     color: #5c6370;
@@ -119,7 +113,6 @@ main.cr-container {
     color: #b88600;
 }
 
-/* columns take the width of their content and long text wraps instead of being cut */
 .cr-table.ui-datatable table {
     table-layout: auto;
 }
@@ -136,7 +129,6 @@ main.cr-container {
     white-space: nowrap;
 }
 
-/* details dialog */
 .cr-details h2 {
     margin: 0 0 4px;
 }

@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.UUID;
 
+// Samy Hajhouj
 @Path("/users/{userId}/watchlist")
 @Produces(MediaType.APPLICATION_JSON)
 public class WatchlistResource {

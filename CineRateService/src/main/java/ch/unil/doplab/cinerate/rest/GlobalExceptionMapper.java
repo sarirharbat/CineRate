@@ -9,6 +9,7 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import java.util.logging.Logger;
 
+// Mouhamed Sarira, Klinsmann Kodra, Samy Hajhouj
 @Provider
 public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
     private static final Logger log = Logger.getLogger(GlobalExceptionMapper.class.getName());
@@ -27,8 +28,6 @@ public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
             log.warning("Request refused (" + status + "): " + exception.getMessage());
         }
 
-        // the type is set explicitly: for an unknown route there is no @Produces to choose it,
-        // and without it Jersey cannot write the description (it would answer 500)
         return Response
                 .status(status)
                 .type(MediaType.APPLICATION_JSON)
@@ -37,25 +36,19 @@ public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
     }
 
     static int statusOf(Exception exception) {
-        if (exception instanceof IllegalArgumentException) {
-            // invalid data sent by the client
+        if (exception instanceof IllegalArgumentException ||
+                exception instanceof IllegalStateException) {
             return Response.Status.BAD_REQUEST.getStatusCode();
         }
         if (exception instanceof WebApplicationException webException) {
-            // errors produced by JAX-RS keep their own status:
-            // 404 unknown route, 405 wrong method, 415 wrong content type, ...
             return webException.getResponse().getStatus();
         }
         if (exception instanceof ProcessingException && isBodyReadingError(exception)) {
-            // the JSON body cannot be read (bad syntax or a value of the wrong type)
             return Response.Status.BAD_REQUEST.getStatusCode();
         }
         return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
     }
 
-    // For a body that cannot be read, Jersey only says "Error deserializing object from entity
-    // stream."; its cause (JSON-B) says which property is wrong, for example
-    // "Unable to deserialize property 'releaseYear' because of: Expected a whole number, got 2000.5".
     static String messageOf(Exception exception, int status) {
         var message = exception.getMessage();
         var cause = exception.getCause();
@@ -66,8 +59,6 @@ public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
         return message;
     }
 
-    // True when the exception was thrown while the body of the request was being read
-    // (MessageBodyReader.readFrom). An error while writing a response stays a 500.
     private static boolean isBodyReadingError(Throwable exception) {
         for (StackTraceElement element : exception.getStackTrace()) {
             if ("readFrom".equals(element.getMethodName())) {

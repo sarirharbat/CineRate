@@ -13,13 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Personne 3 : catalogue des films et recherche avancee.
- *
- * Les erreurs de saisie levent une IllegalArgumentException, que GlobalExceptionMapper
- * transforme en 400 avec un JSON {type, message}. Un UUID bien forme mais absent
- * renvoie 404 avec le meme format.
- */
+// Klinsmann Kodra
 @Path("/movies")
 public class MovieResource {
     @Inject
@@ -31,7 +25,6 @@ public class MovieResource {
         return new ArrayList<>(state.getAllMovies().values());
     }
 
-    // Declare avant /{id} pour la lisibilite ; JAX-RS prefere de toute facon le chemin litteral.
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/search")

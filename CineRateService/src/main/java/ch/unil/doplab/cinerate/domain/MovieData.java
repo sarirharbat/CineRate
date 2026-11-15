@@ -4,20 +4,10 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 
 import java.util.List;
 
-/**
- * Personne 3 : corps des requetes POST /movies et PUT /movies/{id}.
- *
- * Il ne contient que les champs modifiables par un client. Les valeurs calculees
- * par le service (UUID, nom du realisateur, moyenne et nombre de notes, avis)
- * ne peuvent pas etre ecrites : elles sont lues depuis le Movie stocke.
- *
- * Les identifiants et les genres sont des String pour que le service puisse
- * repondre 400 avec un message clair quand une valeur est invalide.
- */
+// Klinsmann Kodra
 public class MovieData {
 
     private String title;
-    // lecture stricte : 2000.5 ou 99999999999 donnent 400 au lieu d'etre tronques
     @JsonbTypeDeserializer(WholeNumberDeserializer.class)
     private Integer releaseYear;
     @JsonbTypeDeserializer(WholeNumberDeserializer.class)

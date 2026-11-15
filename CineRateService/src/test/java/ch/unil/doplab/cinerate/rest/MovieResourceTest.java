@@ -6,11 +6,7 @@ import org.junit.jupiter.api.Test;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Personne 3 : lecture de l'identifiant de chemin. Un UUID mal forme leve une
- * IllegalArgumentException, que GlobalExceptionMapper transforme en 400.
- * Les codes HTTP complets sont verifies avec la collection Postman sur Payara.
- */
+// Klinsmann Kodra
 class MovieResourceTest {
 
     @Test

@@ -1,5 +1,6 @@
 package ch.unil.doplab.cinerate.domain;
 
+// Elias Mounerat
 public class ExceptionDescription {
     private String type;
     private String message;

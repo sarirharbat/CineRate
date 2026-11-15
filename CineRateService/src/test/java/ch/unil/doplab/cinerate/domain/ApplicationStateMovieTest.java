@@ -9,9 +9,7 @@ import static ch.unil.doplab.cinerate.domain.ApplicationState.*;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Personne 3 : catalogue, recherche et relations, testes sur l'etat partage.
- */
+// Klinsmann Kodra
 class ApplicationStateMovieTest {
 
     private static final UUID aliceID = UUID.fromString("1ead1a6d-7d30-4e2d-96ad-37f620949a9b");
@@ -25,8 +23,6 @@ class ApplicationStateMovieTest {
         state = new ApplicationState();
         state.init();
     }
-
-    // ---------------------------------------------------------------- helpers
 
     private static Set<String> titles(List<Movie> movies) {
         var titles = new TreeSet<String>();
@@ -50,7 +46,6 @@ class ApplicationStateMovieTest {
         return data;
     }
 
-    // Corps de PUT qui reprend Inception tel qu'il est dans la demo.
     private static MovieData inceptionData() {
         var data = data("Inception", 2010, nolanID, List.of(dicaprioID, gordonLevittID),
                 List.of("Science Fiction", "Action"), List.of("dream", "heist"));
@@ -61,8 +56,6 @@ class ApplicationStateMovieTest {
     private Set<UUID> filmography(Person person) {
         return new HashSet<>(person.getMovies());
     }
-
-    // ------------------------------------------------- 1. CRUD complet
 
     @Test
     void testMovieLifecycle() {
@@ -116,8 +109,6 @@ class ApplicationStateMovieTest {
         assertEquals(List.of(movie), state.searchMovies(null, null, null, null, " MEMORY "));
     }
 
-    // ------------------------------------------------- 2. Entrees invalides
-
     @Test
     void testAddMovieFailure_BlankTitle() {
         printMethodName();
@@ -145,7 +136,6 @@ class ApplicationStateMovieTest {
         printMethodName();
         var e = assertThrows(IllegalArgumentException.class, () -> ApplicationState.parseUUID("not-a-uuid", "movie"));
         assertTrue(e.getMessage().contains("Invalid movie id"));
-        // UUID.fromString accepterait cette forme abregee : le service la refuse
         assertThrows(IllegalArgumentException.class, () -> ApplicationState.parseUUID("1-1-1-1-1", "movie"));
         assertThrows(IllegalArgumentException.class, () -> ApplicationState.parseUUID(null, "movie"));
         assertEquals(inceptionID, ApplicationState.parseUUID(" " + inceptionID + " ", "movie"));
@@ -184,7 +174,6 @@ class ApplicationStateMovieTest {
     void testInvalidPutLeavesMovieAndRelationsUnchanged() {
         printMethodName();
         var inception = state.getMovie(inceptionID);
-        // contenu nouveau, mais une reference de casting inconnue en fin de liste
         var invalid = data("Changed", 2011, scorseseID, List.of(ruffaloID, UUID.randomUUID()),
                 List.of("Drama"), List.of("changed"));
         assertThrows(IllegalArgumentException.class, () -> state.setMovie(inceptionID, invalid));
@@ -200,8 +189,6 @@ class ApplicationStateMovieTest {
         assertFalse(state.getActor(ruffaloID).playsIn(inceptionID));
         assertTrue(state.getActor(gordonLevittID).playsIn(inceptionID));
     }
-
-    // ------------------------------------------------- 3. Recherche
 
     @Test
     void testSearchWithoutActiveCriteriaReturnsCatalogue() {
@@ -223,7 +210,6 @@ class ApplicationStateMovieTest {
         var expected = Set.of("Inception", "Shutter Island");
         assertEquals(expected, titles(state.searchMovies(null, "leonardo dicaprio", null, null, null)));
         assertEquals(expected, titles(state.searchMovies(null, "  LEONARDO   DiCaprio ", null, null, null)));
-        // le nom complet est attendu ; un nom inconnu donne une liste vide
         assertEquals(List.of(), state.searchMovies(null, "DiCaprio", null, null, null));
         assertEquals(List.of(), state.searchMovies(null, "Unknown Person", null, null, null));
     }
@@ -252,7 +238,6 @@ class ApplicationStateMovieTest {
         assertEquals(Set.of("Inception"), titles(state.searchMovies(null, null, null, "science fiction", null)));
         assertEquals(Set.of("Inception"), titles(state.searchMovies(null, null, null, "ScienceFiction", null)));
         assertEquals(Set.of("Shutter Island"), titles(state.searchMovies(null, null, null, " Thriller ", null)));
-        // genre valide mais sans film
         assertEquals(List.of(), state.searchMovies(null, null, null, "Western", null));
     }
 
@@ -275,7 +260,6 @@ class ApplicationStateMovieTest {
     @Test
     void testSearchActorAndTheme() {
         printMethodName();
-        // chaque critere seul renvoie deux films ; leur intersection n'en garde qu'un
         assertEquals(2, state.searchMovies(null, "leonardo dicaprio", null, null, null).size());
         assertEquals(2, state.searchMovies(null, null, null, null, "DREAM").size());
         var result = state.searchMovies(null, "leonardo dicaprio", null, null, "DREAM");
@@ -292,8 +276,6 @@ class ApplicationStateMovieTest {
                 titles(state.searchMovies("in", "Leonardo DiCaprio", "Christopher Nolan", "Action", "heist")));
     }
 
-    // ------------------------------------------------- 4. Relations lors d'un PUT
-
     @Test
     void testChangeDirector() {
         printMethodName();
@@ -304,7 +286,6 @@ class ApplicationStateMovieTest {
         assertFalse(state.getDirector(nolanID).hasDirected(inceptionID));
         assertTrue(state.getDirector(scorseseID).hasDirected(inceptionID));
 
-        // sans realisateur : le film quitte aussi la filmographie de Scorsese
         data.setDirectorID(null);
         state.setMovie(inceptionID, data);
         assertNull(inception.getDirectorID());
@@ -325,7 +306,6 @@ class ApplicationStateMovieTest {
         assertFalse(state.getActor(gordonLevittID).playsIn(inceptionID));
         assertEquals(Set.of(nightmareID, inceptionID), filmography(state.getActor(englundID)));
 
-        // vider le casting
         data.setCast(List.of());
         state.setMovie(inceptionID, data);
         assertEquals(List.of(), inception.getCast());
@@ -355,8 +335,6 @@ class ApplicationStateMovieTest {
         assertEquals(8.0, updated.getRatingAverage());
         assertNotNull(updated.getReview(aliceID));
     }
-
-    // ------------------------------------------------- 5. Suppression et raccord Personne 4
 
     @Test
     void testRemoveMovieCleansReviewsWatchlistsAndPeople() {
@@ -396,13 +374,10 @@ class ApplicationStateMovieTest {
     void testRemoveMovieWhoseReviewerWasDeleted() {
         printMethodName();
         new Review(Rating.SIX, "Fine").post(state.getUser(aliceID), state.getMovie(inceptionID));
-        // removeUser ne nettoie pas encore les avis (TODO personne 4)
         assertTrue(state.removeUser(aliceID));
         assertTrue(state.removeMovie(inceptionID));
         assertNull(state.getMovie(inceptionID));
     }
-
-    // ------------------------------------------------- 6. Reset
 
     @Test
     void testResetRestoresDemoCatalogue() {

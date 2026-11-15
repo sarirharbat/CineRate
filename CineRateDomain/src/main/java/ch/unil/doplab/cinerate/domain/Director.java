@@ -3,6 +3,7 @@ package ch.unil.doplab.cinerate.domain;
 import java.time.LocalDate;
 import java.util.UUID;
 
+// Elias Mounerat
 public class Director extends Person {
 
     public Director() {

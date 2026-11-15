@@ -2,6 +2,7 @@ package ch.unil.doplab.cinerate.domain;
 
 import java.util.*;
 
+// Elias Mounerat
 public class Movie {
 
     public static final int minRating = Rating.ONE.getValue();

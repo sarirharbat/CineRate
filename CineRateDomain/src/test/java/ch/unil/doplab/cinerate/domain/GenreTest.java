@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 
+// Elias Mounerat
 class GenreTest {
 
     @Test

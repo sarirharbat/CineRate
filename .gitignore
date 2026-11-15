@@ -36,5 +36,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
-### graphify ###
-graphify-out/
+### Local output ###
+*-out/

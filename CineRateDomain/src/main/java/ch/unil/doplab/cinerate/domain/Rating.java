@@ -1,5 +1,6 @@
 package ch.unil.doplab.cinerate.domain;
 
+// Elias Mounerat
 public enum Rating {
     NO_RATING(0),
     ONE(1),

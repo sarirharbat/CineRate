@@ -3,6 +3,7 @@ package ch.unil.doplab.cinerate.domain;
 import java.lang.reflect.Constructor;
 import org.mindrot.jbcrypt.BCrypt;
 
+// Elias Mounerat
 public class Utils {
     public static final String memberRole = "member";
     public static final String adminRole = "admin";

@@ -8,6 +8,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 
+// Elias Mounerat
 class MovieTest {
 
     private Movie inception;

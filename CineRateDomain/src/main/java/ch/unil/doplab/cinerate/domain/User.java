@@ -5,6 +5,7 @@ import jakarta.json.bind.annotation.JsonbTransient;
 import java.time.LocalDate;
 import java.util.*;
 
+// Elias Mounerat
 public class User {
 
     private UUID uuid;

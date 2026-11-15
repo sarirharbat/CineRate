@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Klinsmann Kodra
 class CatalogueBeanTest {
 
     private CatalogueBean bean;
@@ -64,7 +65,6 @@ class CatalogueBeanTest {
         bean.setGenre("Thriller");
         bean.search();
         assertEquals(Set.of("Shutter Island"), titles());
-        // the empty choice "Select genre..." does not filter
         bean.setGenre("");
         bean.search();
         assertEquals(3, bean.getMovies().size());

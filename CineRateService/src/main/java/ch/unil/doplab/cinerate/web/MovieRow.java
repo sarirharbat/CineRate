@@ -3,10 +3,7 @@ package ch.unil.doplab.cinerate.web;
 import java.io.Serializable;
 import java.util.UUID;
 
-/**
- * One movie as shown in the catalogue page: only text and numbers, ready to display.
- * (A plain class with getters, because the EL of Jakarta EE 10 cannot read records.)
- */
+// Klinsmann Kodra
 public class MovieRow implements Serializable {
 
     private final UUID id;
