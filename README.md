@@ -10,6 +10,12 @@ Phase 1 is the domain model and the web service.
 
 - `CineRateDomain`: the model classes (`User`, `Movie`, `Review`, `Person`, `Actor`, `Director`,
   `Genre`, `Rating`, `Utils`) and their unit tests.
+  - `User`: an account (username, names, email, hashed password, role, reviews, watchlist)
+  - `Movie`: a movie with its director, cast, genres, keywords and reviews
+  - `Review`: a rating from 1 to 10 and a comment, by one user about one movie
+  - `Person`, `Actor`, `Director`: the people of a movie
+  - `Genre`, `Rating`: the accepted genres and ratings
+  - `Utils`: the password hashing and the roles
 - `CineRateService`: the REST web service. The data is kept in memory in `ApplicationState`.
 
 ## Who did what
@@ -17,7 +23,7 @@ Phase 1 is the domain model and the web service.
 - Elias Mounerat: the domain model and its tests.
 - Mouhamed Sarira: the web service, the users CRUD, the README and the Postman collection.
 - Klinsmann Kodra: the movies CRUD and the advanced search in the service (with a demo catalogue).
-- Reviews and watchlists in the service: to do.
+- Samy Hajhouj: the reviews and the watchlists in the service.
 
 ## How to run it
 
@@ -50,7 +56,7 @@ directly (the page runs inside the same WAR as the REST service).
 
 Login, reviews and the watchlist are not on the page yet. The browser keeps the CSS of the page
 for 7 days: after changing `resources/css/cinerate.css`, reload the page without the cache
-(Cmd+Shift+R).
+(Ctrl+Shift+R, or Cmd+Shift+R on a Mac).
 
 ## Requests
 
@@ -70,6 +76,30 @@ Movies (details in the [Movies](#movies) section):
 - `DELETE /movies/{id}`: delete a movie, its reviews and its watchlist entries (`200`)
 - `GET /movies/search`: find movies with `title`, `actor`, `director`, `genre` and `keyword` (`200`)
 
+Reviews:
+
+- `GET /users/{userId}/reviews`: all the reviews of a user
+- `GET /users/{userId}/reviews/{movieId}`: the review of a user about a movie
+- `POST /users/{userId}/reviews/{movieId}`: write a review (`201`)
+- `PUT /users/{userId}/reviews/{movieId}`: change the rating and the comment
+- `DELETE /users/{userId}/reviews/{movieId}`: delete the review
+
+The body is `{"rating": 8, "comment": "Great movie"}`: a rating from 1 to 10 and a comment
+of at most 1000 characters. A user can write only one review per movie (a second one gives `400`).
+The average rating of the movie is updated after each change.
+
+Watchlist:
+
+- `GET /users/{userId}/watchlist`: the IDs of the movies to watch
+- `POST /users/{userId}/watchlist/{movieId}`: add a movie to the watchlist
+- `DELETE /users/{userId}/watchlist/{movieId}`: remove a movie from the watchlist
+- `PUT /users/{userId}/watchlist/{movieId}/watched`: mark a movie as watched (it leaves the watchlist)
+- `DELETE /users/{userId}/watchlist/{movieId}/watched`: mark a movie as not watched
+- `GET /users/{userId}/watchlist/watched`: the IDs of the watched movies
+
+A movie already in the watchlist, or not in it, gives `400`. An unknown user gives `404`, and so
+does an unknown movie when it is added.
+
 Service:
 
 - `GET /service/reset`: go back to the demo users and the demo catalogue
@@ -82,10 +112,12 @@ A username is the same with or without capital letters (`Alice` and `alice` are 
 The service answers with these status codes:
 
 - `200`: OK
-- `201`: the user or the movie was created
+- `201`: the user, the movie or the review was created
 - `400`: the data is not valid (for example a username already taken or an email without `@`)
 - `401`: wrong username or password at login
 - `404`: the user or the movie does not exist
+- `405`: the method is not allowed on this address
+- `415`: the body is not sent as JSON
 - `500`: any other error
 
 An error with a message comes back as a JSON with its `type` and its `message`.
