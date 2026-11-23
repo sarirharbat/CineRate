@@ -180,6 +180,14 @@ public class ApplicationState {
         return directorId == null ? null : directors.get(directorId);
     }
 
+    public Map<UUID, Actor> getAllActors() {
+        return new TreeMap<>(actors);
+    }
+
+    public Map<UUID, Director> getAllDirectors() {
+        return new TreeMap<>(directors);
+    }
+
     public Movie addMovie(MovieData data) {
         return addMovie(UUID.randomUUID(), data);
     }
