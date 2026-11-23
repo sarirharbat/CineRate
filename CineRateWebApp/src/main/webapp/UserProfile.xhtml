@@ -108,13 +108,7 @@
 
         <p:outputLabel for="@next" value="Delete Account"/>
         <h:form id="deleteAccountForm">
-            <p:commandButton id="deleteButton" value="Delete my account" action="#{userBean.deleteUser()}">
-                <p:confirm header="Delete Account" message="Do you really want to delete your account?"/>
-            </p:commandButton>
-            <p:confirmDialog global="true">
-                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"/>
-                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no"/>
-            </p:confirmDialog>
+            <p:commandButton id="deleteButton" value="Delete my account" action="#{userBean.deleteUser()}"/>
         </h:form>
     </ui:define>
 

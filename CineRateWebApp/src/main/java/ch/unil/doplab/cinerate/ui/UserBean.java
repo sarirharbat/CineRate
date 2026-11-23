@@ -91,6 +91,7 @@ public class UserBean extends User implements Serializable {
     public void updateUser() {
         try {
             if (this.getUUID() != null) {
+                this.setPassword(null);
                 theService.setUser(this);
                 theUser = theService.getUser(this.getUUID().toString());
                 changed = false;
