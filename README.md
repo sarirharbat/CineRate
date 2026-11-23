@@ -4,7 +4,7 @@ A movie rating website. Users can rate movies from 1 to 10, write a review, keep
 and see the average rating of each movie.
 
 This is the project of our group for the Software Architectures course (UNIL).
-Phase 1 is the domain model and the web service.
+Phase 1 is the domain model and the web service. Phase 2 is the web app.
 
 ## Projects
 
@@ -17,6 +17,8 @@ Phase 1 is the domain model and the web service.
   - `Genre`, `Rating`: the accepted genres and ratings
   - `Utils`: the password hashing and the roles
 - `CineRateService`: the REST web service. The data is kept in memory in `ApplicationState`.
+- `CineRateWebApp`: the website (JSF and PrimeFaces 14). It calls the web service over HTTP
+  with the class `CineRateService` and uses the model classes of `CineRateDomain`.
 
 ## Who did what
 
@@ -24,6 +26,10 @@ Phase 1 is the domain model and the web service.
 - Mouhamed Sarira: the web service, the users CRUD, the README and the Postman collection.
 - Klinsmann Kodra: the movies CRUD and the advanced search in the service (with a demo catalogue).
 - Samy Hajhouj: the reviews and the watchlists in the service.
+
+Phase 2:
+
+- Mouhamed Sarira: the web app project (`CineRateWebApp`), the login, register and profile pages.
 
 ## How to run it
 
@@ -41,6 +47,33 @@ Phase 1 is the domain model and the web service.
 The API is here: http://localhost:8080/CineRateService-1.0-SNAPSHOT/api
 
 The website is here: http://localhost:8080/CineRateService-1.0-SNAPSHOT/
+
+## How to run the web app
+
+1. Run the web service first (steps above).
+2. Open `CineRateWebApp` in IntelliJ. In the Maven tab, run `clean` then `install`.
+3. Add a run configuration like for the service, with Deployment `CineRateWebApp:war`.
+4. Click the green arrow to deploy.
+
+The web app is here: http://localhost:8080/CineRateWebApp-1.0-SNAPSHOT/
+
+## Web app pages
+
+- `Login.xhtml`: log in with a username and a password (`POST /users/login`). A wrong username
+  or password shows "Invalid login".
+- `Register.xhtml`: create an account (`POST /users`). If the data is not valid, the page shows
+  the message of the service.
+- `UserProfile.xhtml`: the page of the logged-in user.
+  - Change the first name, the last name, the email and the username (`Update`, `Undo`).
+  - Change the password. The current password is checked first.
+  - Delete the account, after a confirmation window.
+  - `Logout` in the menu.
+
+Components used: `p:panel`, `p:outputLabel`, `p:inputText`, `p:password`, `p:commandButton`,
+`p:message`, `p:growl`, `p:dialog` and `p:confirmDialog`.
+
+The password of a `User` is never in its JSON (`@JsonbTransient`), so the class `CineRateService`
+of the web app writes the fields it sends to the service one by one.
 
 ## Website (first page)
 
