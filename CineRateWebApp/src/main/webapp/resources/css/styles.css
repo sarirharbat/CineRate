@@ -1,59 +1,182 @@
+/* Design CineRate - style de la maquette */
+
 body {
-    font-family: "Lato", sans-serif;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background: #0f1117;
+    color: #e8e8ee;
+    margin: 0;
 }
 
+/* ===== Barre du haut (avant : barre de gauche) ===== */
 .sidenav {
-    height: 100%;
-    width: 160px;
     position: fixed;
-    z-index: 1;
     top: 0;
     left: 0;
-    background-color: #111;
-    overflow-x: hidden;
-    padding-top: 20px;
+    right: 0;
+    height: 64px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 30px;
+    background: #161a24;
+    border-bottom: 1px solid #262b38;
+}
+
+.sidenav div[align="center"] {
+    margin-right: 30px;
+}
+
+.sidenav hr {
+    display: none;
+}
+
+.sidenav form {
+    display: inline;
+    margin: 0;
 }
 
 .sidenav a {
-    padding: 6px 8px 6px 16px;
+    color: #b8bccb;
     text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
+    font-size: 17px;
+    padding: 6px 10px;
+    border-bottom: 2px solid transparent;
 }
 
 .sidenav a:hover {
-    color: #f1f1f1;
+    color: #ffffff;
+    border-bottom: 2px solid #f5c518;
 }
 
+/* Logo */
+.logo {
+    font-size: 28px !important;
+    font-weight: bold;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.logo span {
+    color: #f5c518;
+}
+
+/* ===== Zone principale ===== */
 .main {
-    margin-left: 160px;
-    font-size: 28px;
-    padding: 0px 10px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 90px 30px 40px 30px;
+    font-size: 16px;
 }
 
-@media screen and (max-height: 450px) {
-    .sidenav {
-        padding-top: 15px;
-    }
-
-    .sidenav a {
-        font-size: 18px;
-    }
+.main h2 {
+    color: #ffffff;
+    font-size: 30px;
+    margin-bottom: 25px;
 }
 
+/* Chaque formulaire devient une carte */
+.main form {
+    background: #161a24;
+    border: 1px solid #262b38;
+    border-radius: 14px;
+    padding: 20px 25px;
+    margin-bottom: 20px;
+}
+
+.main h3, .main legend {
+    color: #ffffff;
+}
+
+.main a, .center-panel a {
+    color: #f5c518;
+}
+
+/* ===== Champs de texte ===== */
+.ui-inputfield, .ui-password input {
+    background: #0b0d12 !important;
+    border: 1px solid #2e3444 !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    padding: 8px 12px !important;
+}
+
+.ui-inputfield:focus, .ui-password input:focus {
+    border-color: #f5c518 !important;
+    box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.25) !important;
+}
+
+/* ===== Boutons jaunes ===== */
+.ui-button {
+    background: #f5c518 !important;
+    border: 1px solid #f5c518 !important;
+    color: #111111 !important;
+    border-radius: 8px !important;
+    font-weight: bold !important;
+}
+
+.ui-button:hover {
+    background: #ffd84d !important;
+}
+
+/* ===== Pages Login et Register ===== */
 .center-panel {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
-.login-panel {
-    width: 350px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
+.login-panel, .ui-panel {
+    background: #161a24 !important;
+    border: 1px solid #262b38 !important;
+    border-radius: 14px !important;
+    color: #e8e8ee !important;
+}
+
+.ui-panel .ui-panel-titlebar, .ui-panel .ui-panel-footer {
+    background: #161a24 !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.ui-panel .ui-panel-content {
+    background: transparent !important;
+    border: none !important;
+    color: #e8e8ee !important;
+}
+/* ===== Retouches ===== */
+
+/* Login / Register : carte centrée et pas trop large */
+.ui-panel {
+    max-width: 480px;
+    margin: 80px auto 0 auto !important;
+}
+
+.ui-panel a {
+    color: #f5c518 !important;
+    font-weight: bold;
+}
+
+/* Profil : cartes moins larges */
+.main form {
+    max-width: 520px;
+}
+
+/* Titres de section avec une barre jaune */
+.main h3, .main legend, .main .ui-outputlabel.section-title {
+    border-left: 4px solid #f5c518;
+    padding-left: 10px;
+    font-size: 20px;
+}
+
+/* Bouton désactivé (ex : Update avant modification) */
+.ui-button.ui-state-disabled {
+    background: #3a3520 !important;
+    border-color: #3a3520 !important;
+    color: #8a8470 !important;
+}
+/* Login : blocs collés entre eux */
+.ui-panel + .ui-panel {
+    margin-top: 12px !important;
 }
