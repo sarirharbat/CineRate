@@ -16,8 +16,6 @@ import java.util.UUID;
 public class UserBean extends User implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Field theUser always contains the current user as known on the server
-    // so that we can compare it with the current user in the form
     private User theUser;
     private String currentPassword;
     private String newPassword;
