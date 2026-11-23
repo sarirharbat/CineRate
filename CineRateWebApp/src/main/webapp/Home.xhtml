@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<!-- Page d'accueil CineRate - Elias Mounerat -->
+<h:head>
+    <title>CineRate</title>
+    <h:outputStylesheet name="css/styles.css"/>
+</h:head>
+<h:body>
+
+    <!-- Barre du haut -->
+    <div class="home-nav">
+        <h:link outcome="Home" styleClass="logo">&#9733; Cine<span>Rate</span></h:link>
+        <div class="home-nav-links">
+            <a href="#top-rated">Top rated</a>
+            <a href="#most-reviewed">Most reviewed</a>
+        </div>
+        <div class="home-nav-buttons">
+            <h:link outcome="Login" value="Log in" styleClass="btn-outline"/>
+            <h:link outcome="Register" value="Sign up" styleClass="btn-yellow"/>
+        </div>
+    </div>
+
+    <div class="home-content">
+
+        <!-- Bandeau -->
+        <div class="hero">
+            <h1>Find it. Rate it. Review it.</h1>
+            <p>Forgot the title? Search by actor, director or theme.</p>
+            <div class="hero-search">
+                <!-- TODO Klinsmann : relier a la recherche du Catalogue -->
+                <input type="text" placeholder="e.g. Mara Quinlan, space, revenge..."/>
+                <h:link outcome="Login" value="Search" styleClass="btn-yellow"/>
+            </div>
+        </div>
+
+        <!-- 3 cartes de presentation -->
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">&#9733;</div>
+                <h3>Rate</h3>
+                <p>Give every movie a score from 1 to 10.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">&#9998;</div>
+                <h3>Review</h3>
+                <p>Write your opinion and read the others.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">&#10063;</div>
+                <h3>Watchlist</h3>
+                <p>Save the movies you want to see later.</p>
+            </div>
+        </div>
+
+        <!-- Films les mieux notes -->
+        <!-- TODO : remplacer les exemples par les vrais films (getMovies) -->
+        <div class="home-card" id="top-rated">
+            <div class="home-card-title">
+                <h2>Top-rated movies <span>this week</span></h2>
+                <h:link outcome="Login" value="See all &#8250;"/>
+            </div>
+            <div class="movie-row">
+                <div class="movie">
+                    <div class="poster p1"><span class="badge">&#9733; 9.1</span><b>ECHOES OF MARS</b></div>
+                    <h4>Echoes of Mars</h4><small>2024 &#183; Sci-Fi</small>
+                </div>
+                <div class="movie">
+                    <div class="poster p2"><span class="badge">&#9733; 8.9</span><b>THE LAST LIGHTHOUSE</b></div>
+                    <h4>The Last Lighthouse</h4><small>2021 &#183; Drama</small>
+                </div>
+                <div class="movie">
+                    <div class="poster p3"><span class="badge">&#9733; 8.8</span><b>NEON HARBOR</b></div>
+                    <h4>Neon Harbor</h4><small>2023 &#183; Thriller</small>
+                </div>
+                <div class="movie">
+                    <div class="poster p4"><span class="badge">&#9733; 8.7</span><b>THE SILENT HEIST</b></div>
+                    <h4>The Silent Heist</h4><small>2019 &#183; Crime</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Films les plus critiques -->
+        <!-- TODO : remplacer les exemples par les vrais films -->
+        <div class="home-card" id="most-reviewed">
+            <div class="home-card-title"><h2>Most reviewed</h2></div>
+            <div class="rank-row"><span class="rank">1</span><b>Midnight Orchard</b><small>2022 &#183; Mystery</small><span class="score">&#9733; 8.4 <small>1204 reviews</small></span></div>
+            <div class="rank-row"><span class="rank">2</span><b>Saltwater Kings</b><small>2020 &#183; Adventure</small><span class="score">&#9733; 8.1 <small>987 reviews</small></span></div>
+            <div class="rank-row"><span class="rank">3</span><b>Orbit of Silence</b><small>2019 &#183; Sci-Fi</small><span class="score">&#9733; 8.2 <small>912 reviews</small></span></div>
+        </div>
+
+        <!-- Appel a s'inscrire -->
+        <div class="home-cta">
+            <h2>Ready to share your taste?</h2>
+            <h:link outcome="Register" value="Create my free account" styleClass="btn-yellow"/>
+        </div>
+
+        <p class="home-footer">CineRate &#183; UNIL Software Architecture 2026</p>
+    </div>
+</h:body>
+</html>

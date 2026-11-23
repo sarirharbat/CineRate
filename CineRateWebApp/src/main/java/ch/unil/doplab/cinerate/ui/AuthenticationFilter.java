@@ -32,13 +32,16 @@ public class AuthenticationFilter implements Filter {
                 && session.getAttribute("uuid") != null
                 && session.getAttribute("username") != null;
 
-        // Les pages Login et Register sont ouvertes à tout le monde
+        // Les pages Home, Login et Register sont ouvertes à tout le monde
         String loginURI = req.getContextPath() + "/Login.xhtml";
         String registerURI = req.getContextPath() + "/Register.xhtml";
+        String homeURI = req.getContextPath() + "/Home.xhtml";
         boolean loginRequest = requestURI.equals(loginURI);
         boolean registerRequest = requestURI.equals(registerURI);
+        boolean homeRequest = requestURI.equals(homeURI);
+        boolean rootRequest = requestURI.equals(req.getContextPath() + "/");
 
-        if (loggedIn || loginRequest || registerRequest) {
+        if (loggedIn || loginRequest || registerRequest || homeRequest || rootRequest) {
             chain.doFilter(request, response);   // on laisse passer
         } else {
             res.sendRedirect(loginURI);          // sinon, retour à la connexion
