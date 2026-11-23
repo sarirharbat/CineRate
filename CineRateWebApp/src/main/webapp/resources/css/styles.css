@@ -27,8 +27,8 @@ body {
 }
 
 .main {
-    margin-left: 160px; /* Same as the width of the sidenav */
-    font-size: 28px; /* Increased text to enable scrolling */
+    margin-left: 160px;
+    font-size: 28px;
     padding: 0px 10px;
 }
 
@@ -41,20 +41,19 @@ body {
         font-size: 18px;
     }
 }
-/* ----------------------------------- */
 
 .center-panel {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Full viewport height for vertical centering */
+    height: 100vh;
 }
 
 .login-panel {
-    width: 350px; /* Adjust width based on your design */
+    width: 350px;
     padding: 20px;
-    background-color: #f9f9f9; /* Optional: customize background color */
-    border-radius: 8px; /* Optional: rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
-    text-align: center; /* Center-align text inside panel */
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }

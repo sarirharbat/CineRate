@@ -21,12 +21,18 @@ public class CineRateService {
     private static final String BASE_URL = "http://localhost:8080/CineRateService-1.0-SNAPSHOT/api";
     private WebTarget userTarget;
     private WebTarget serviceTarget;
+    private WebTarget actorTarget;
+    private WebTarget directorTarget;
+    private WebTarget genreTarget;
 
     @PostConstruct
     public void init() {
         Client client = ClientBuilder.newClient();
         userTarget = client.target(BASE_URL).path("users");
         serviceTarget = client.target(BASE_URL).path("service");
+        actorTarget = client.target(BASE_URL).path("actors");
+        directorTarget = client.target(BASE_URL).path("directors");
+        genreTarget = client.target(BASE_URL).path("genres");
     }
 
     public void resetService() {
@@ -100,8 +106,30 @@ public class CineRateService {
         return null;
     }
 
-    // The password is never in the JSON of a User (@JsonbTransient in the domain),
-    // so the fields sent to the service are written one by one.
+    public List<Actor> getAllActors() {
+        var actors = actorTarget
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<Actor>>() {
+                });
+        return actors;
+    }
+
+    public List<Director> getAllDirectors() {
+        var directors = directorTarget
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<Director>>() {
+                });
+        return directors;
+    }
+
+    public List<String> getAllGenres() {
+        var genres = genreTarget
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<String>>() {
+                });
+        return genres;
+    }
+
     private Map<String, String> toJson(User user) {
         var json = new HashMap<String, String>();
         if (user.getFirstName() != null) {
