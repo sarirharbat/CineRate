@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 // Mouhamed Sarira
 @ApplicationScoped
@@ -24,6 +25,7 @@ public class CineRateService {
     private WebTarget actorTarget;
     private WebTarget directorTarget;
     private WebTarget genreTarget;
+    private WebTarget movieTarget;
 
     @PostConstruct
     public void init() {
@@ -33,6 +35,7 @@ public class CineRateService {
         actorTarget = client.target(BASE_URL).path("actors");
         directorTarget = client.target(BASE_URL).path("directors");
         genreTarget = client.target(BASE_URL).path("genres");
+        movieTarget = client.target(BASE_URL).path("movies");
     }
 
     public void resetService() {
@@ -128,6 +131,192 @@ public class CineRateService {
                 .get(new GenericType<List<String>>() {
                 });
         return genres;
+    }
+
+    public List<Movie> getAllMovies() {
+        var movies = movieTarget
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<Movie>>() {
+                });
+        return movies;
+    }
+
+    public List<Movie> searchMovies(String title, String actor, String director, String genre, String keyword) {
+        var movies = movieTarget
+                .path("search")
+                .queryParam("title", title)
+                .queryParam("actor", actor)
+                .queryParam("director", director)
+                .queryParam("genre", genre)
+                .queryParam("keyword", keyword)
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<Movie>>() {
+                });
+        return movies;
+    }
+
+    public Movie getMovie(String id) {
+        var movie = movieTarget
+                .path(id)
+                .request()
+                .get(Movie.class);
+        return movie;
+    }
+
+    public Movie addMovie(Movie movie) throws Exception {
+        var response = movieTarget
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(movie, MediaType.APPLICATION_JSON));
+        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
+            return response.readEntity(Movie.class);
+        } else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            throw Utils.buildException(description);
+        }
+    }
+
+    public boolean setMovie(Movie movie) throws Exception {
+        var response = movieTarget
+                .path(movie.getUUID().toString())
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(movie, MediaType.APPLICATION_JSON));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return true;
+        } else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            throw Utils.buildException(description);
+        }
+    }
+
+    public boolean deleteMovie(String id) {
+        var response = movieTarget
+                .path(id)
+                .request(MediaType.APPLICATION_JSON)
+                .delete();
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    public List<Review> getReviews(String userId) {
+        var reviews = userTarget
+                .path(userId)
+                .path("reviews")
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<Review>>() {
+                });
+        return reviews;
+    }
+
+    public Review getReview(String userId, String movieId) {
+        var review = userTarget
+                .path(userId)
+                .path("reviews")
+                .path(movieId)
+                .request()
+                .get(Review.class);
+        return review;
+    }
+
+    public Review addReview(String userId, String movieId, Review review) throws Exception {
+        var response = userTarget
+                .path(userId)
+                .path("reviews")
+                .path(movieId)
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(review, MediaType.APPLICATION_JSON));
+        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
+            return response.readEntity(Review.class);
+        } else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            throw Utils.buildException(description);
+        }
+    }
+
+    public boolean setReview(String userId, String movieId, Review review) throws Exception {
+        var response = userTarget
+                .path(userId)
+                .path("reviews")
+                .path(movieId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(review, MediaType.APPLICATION_JSON));
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return true;
+        } else {
+            ExceptionDescription description = response.readEntity(ExceptionDescription.class);
+            throw Utils.buildException(description);
+        }
+    }
+
+    public boolean deleteReview(String userId, String movieId) {
+        var response = userTarget
+                .path(userId)
+                .path("reviews")
+                .path(movieId)
+                .request(MediaType.APPLICATION_JSON)
+                .delete();
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    public List<UUID> getWatchlist(String userId) {
+        var watchlist = userTarget
+                .path(userId)
+                .path("watchlist")
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<UUID>>() {
+                });
+        return watchlist;
+    }
+
+    public List<UUID> getWatchedMovies(String userId) {
+        var watched = userTarget
+                .path(userId)
+                .path("watchlist")
+                .path("watched")
+                .request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<UUID>>() {
+                });
+        return watched;
+    }
+
+    public boolean addToWatchlist(String userId, String movieId) {
+        var response = userTarget
+                .path(userId)
+                .path("watchlist")
+                .path(movieId)
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity("", MediaType.APPLICATION_JSON));
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    public boolean removeFromWatchlist(String userId, String movieId) {
+        var response = userTarget
+                .path(userId)
+                .path("watchlist")
+                .path(movieId)
+                .request(MediaType.APPLICATION_JSON)
+                .delete();
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    public boolean markAsWatched(String userId, String movieId) {
+        var response = userTarget
+                .path(userId)
+                .path("watchlist")
+                .path(movieId)
+                .path("watched")
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity("", MediaType.APPLICATION_JSON));
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    public boolean markAsUnwatched(String userId, String movieId) {
+        var response = userTarget
+                .path(userId)
+                .path("watchlist")
+                .path(movieId)
+                .path("watched")
+                .request(MediaType.APPLICATION_JSON)
+                .delete();
+        return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
     private Map<String, String> toJson(User user) {
