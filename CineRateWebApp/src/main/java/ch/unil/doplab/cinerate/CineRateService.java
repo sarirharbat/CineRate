@@ -11,9 +11,8 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 // Mouhamed Sarira
@@ -65,7 +64,7 @@ public class CineRateService {
         user.setUUID(null);
         var response = userTarget
                 .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(toJson(user), MediaType.APPLICATION_JSON));
+                .post(Entity.entity(user, MediaType.APPLICATION_JSON));
         if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
             return response.readEntity(User.class);
         } else {
@@ -78,7 +77,7 @@ public class CineRateService {
         var response = userTarget
                 .path(user.getUUID().toString())
                 .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(toJson(user), MediaType.APPLICATION_JSON));
+                .put(Entity.entity(user, MediaType.APPLICATION_JSON));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return true;
         } else {
@@ -102,7 +101,7 @@ public class CineRateService {
         var response = userTarget
                 .path("login")
                 .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(toJson(credentials), MediaType.APPLICATION_JSON));
+                .post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(User.class);
         }
@@ -142,16 +141,30 @@ public class CineRateService {
     }
 
     public List<Movie> searchMovies(String title, String actor, String director, String genre, String keyword) {
-        var movies = movieTarget
-                .path("search")
-                .queryParam("title", title)
-                .queryParam("actor", actor)
-                .queryParam("director", director)
-                .queryParam("genre", genre)
-                .queryParam("keyword", keyword)
-                .request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<Movie>>() {
-                });
+        var actors = getAllActors();
+        var directors = getAllDirectors();
+        var movies = new ArrayList<Movie>();
+        for (Movie movie : getAllMovies()) {
+            boolean found = true;
+            if (!isEmpty(title) && !movie.getTitle().toLowerCase().contains(title.toLowerCase())) {
+                found = false;
+            }
+            if (!isEmpty(actor) && !playsIn(actors, actor, movie)) {
+                found = false;
+            }
+            if (!isEmpty(director) && !directs(directors, director, movie)) {
+                found = false;
+            }
+            if (!isEmpty(genre) && !movie.hasGenre(Genre.fromLabel(genre))) {
+                found = false;
+            }
+            if (!isEmpty(keyword) && !movie.hasKeyword(keyword)) {
+                found = false;
+            }
+            if (found) {
+                movies.add(movie);
+            }
+        }
         return movies;
     }
 
@@ -277,13 +290,13 @@ public class CineRateService {
         return watched;
     }
 
-    public boolean addToWatchlist(String userId, String movieId) {
+    public boolean addToWatchlist(String userId, Movie movie) {
         var response = userTarget
                 .path(userId)
                 .path("watchlist")
-                .path(movieId)
+                .path(movie.getUUID().toString())
                 .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity("", MediaType.APPLICATION_JSON));
+                .post(Entity.entity(movie, MediaType.APPLICATION_JSON));
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
@@ -297,14 +310,14 @@ public class CineRateService {
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
-    public boolean markAsWatched(String userId, String movieId) {
+    public boolean markAsWatched(String userId, Movie movie) {
         var response = userTarget
                 .path(userId)
                 .path("watchlist")
-                .path(movieId)
+                .path(movie.getUUID().toString())
                 .path("watched")
                 .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity("", MediaType.APPLICATION_JSON));
+                .put(Entity.entity(movie, MediaType.APPLICATION_JSON));
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
@@ -319,23 +332,30 @@ public class CineRateService {
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
-    private Map<String, String> toJson(User user) {
-        var json = new HashMap<String, String>();
-        if (user.getFirstName() != null) {
-            json.put("firstName", user.getFirstName());
+    private boolean playsIn(List<Actor> actors, String name, Movie movie) {
+        for (Actor actor : actors) {
+            if (hasName(actor, name) && movie.hasActor(actor.getUUID())) {
+                return true;
+            }
         }
-        if (user.getLastName() != null) {
-            json.put("lastName", user.getLastName());
+        return false;
+    }
+
+    private boolean directs(List<Director> directors, String name, Movie movie) {
+        for (Director director : directors) {
+            if (hasName(director, name) && movie.isDirectedBy(director.getUUID())) {
+                return true;
+            }
         }
-        if (user.getEmail() != null) {
-            json.put("email", user.getEmail());
-        }
-        if (user.getUsername() != null) {
-            json.put("username", user.getUsername());
-        }
-        if (user.getPassword() != null) {
-            json.put("password", user.getPassword());
-        }
-        return json;
+        return false;
+    }
+
+    private boolean hasName(Person person, String name) {
+        var fullName = person.getFirstName() + " " + person.getLastName();
+        return fullName.toLowerCase().contains(name.toLowerCase());
+    }
+
+    private boolean isEmpty(String text) {
+        return text == null || text.isBlank();
     }
 }
