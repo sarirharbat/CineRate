@@ -29,7 +29,10 @@ Phase 1 is the domain model and the web service. Phase 2 is the web app.
 
 Phase 2:
 
-- Mouhamed Sarira: the web app project (`CineRateWebApp`), the login, register and profile pages.
+- Mouhamed Sarira: the web app project (`CineRateWebApp`), the login, register and profile pages,
+  and the calls for the movies, the reviews and the watchlist in `CineRateService`.
+- Elias Mounerat: the actors, directors and genres in the service, the login filter, the design
+  and the home page.
 
 ## How to run it
 
@@ -55,10 +58,12 @@ The website is here: http://localhost:8080/CineRateService-1.0-SNAPSHOT/
 3. Add a run configuration like for the service, with Deployment `CineRateWebApp:war`.
 4. Click the green arrow to deploy.
 
-The web app is here: http://localhost:8080/CineRateWebApp-1.0-SNAPSHOT/
+The web app is here: http://localhost:8080/CineRateWebApp-1.0-SNAPSHOT/ (it opens on `Home.xhtml`)
 
 ## Web app pages
 
+- `Home.xhtml`: the home page, open to everyone, with links to log in and to register.
+  The movies shown on it are examples written in the page.
 - `Login.xhtml`: log in with a username and a password (`POST /users/login`). A wrong username
   or password shows "Invalid login".
 - `Register.xhtml`: create an account (`POST /users`). If the data is not valid, the page shows
@@ -66,14 +71,17 @@ The web app is here: http://localhost:8080/CineRateWebApp-1.0-SNAPSHOT/
 - `UserProfile.xhtml`: the page of the logged-in user.
   - Change the first name, the last name, the email and the username (`Update`, `Undo`).
   - Change the password. The current password is checked first.
-  - Delete the account, after a confirmation window.
+  - Delete the account.
   - `Logout` in the menu.
 
 Components used: `p:panel`, `p:outputLabel`, `p:inputText`, `p:password`, `p:commandButton`,
-`p:message`, `p:growl`, `p:dialog` and `p:confirmDialog`.
+`p:message`, `p:growl` and `p:dialog`.
 
-The password of a `User` is never in its JSON (`@JsonbTransient`), so the class `CineRateService`
-of the web app writes the fields it sends to the service one by one.
+Without login, only `Home.xhtml`, `Login.xhtml` and `Register.xhtml` can be opened. The other
+pages send back to `Login.xhtml` (`AuthenticationFilter`).
+
+The class `CineRateService` of the web app sends a `User` to the service as it is, in JSON. When the
+profile is updated, the password is set to `null`, so the service keeps the current password.
 
 ## Website (first page)
 
@@ -133,12 +141,21 @@ Watchlist:
 A movie already in the watchlist, or not in it, gives `400`. An unknown user gives `404`, and so
 does an unknown movie when it is added.
 
+Actors, directors and genres:
+
+- `GET /actors`: all the actors
+- `GET /actors/{id}`: one actor (`404` if it does not exist)
+- `GET /directors`: all the directors
+- `GET /directors/{id}`: one director (`404` if it does not exist)
+- `GET /genres`: the labels of the accepted genres
+
 Service:
 
 - `GET /service/reset`: go back to the demo users and the demo catalogue
 
 A user needs a username (not already taken), a first name, a last name, an email with an `@`
-and a password of at least 6 characters. The password is hashed and is never sent back.
+and a password of at least 6 characters. The password is hashed before it is saved: the JSON of a
+user contains this hash, never the password itself.
 
 A username is the same with or without capital letters (`Alice` and `alice` are the same user).
 
