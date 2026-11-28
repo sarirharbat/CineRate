@@ -11,7 +11,7 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.*;
 
-// Klinsmann Kodra
+// Klisman Kodra
 @Named
 @ViewScoped
 public class CatalogueBean implements Serializable {

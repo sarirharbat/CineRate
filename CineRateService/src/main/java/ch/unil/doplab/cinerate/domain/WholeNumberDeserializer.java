@@ -8,7 +8,7 @@ import jakarta.json.stream.JsonParser;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 
-// Klinsmann Kodra
+// Klisman Kodra
 public class WholeNumberDeserializer implements JsonbDeserializer<Integer> {
 
     @Override

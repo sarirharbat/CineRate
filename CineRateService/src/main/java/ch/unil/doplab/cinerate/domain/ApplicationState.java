@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 @ApplicationScoped
 public class ApplicationState {
 
-    // Klinsmann Kodra
+    // Klisman Kodra
     public static final UUID inceptionID = UUID.fromString("10000000-0000-0000-0000-000000000001");
     public static final UUID shutterIslandID = UUID.fromString("10000000-0000-0000-0000-000000000002");
     public static final UUID nightmareID = UUID.fromString("10000000-0000-0000-0000-000000000003");
@@ -30,7 +30,7 @@ public class ApplicationState {
     private Map<UUID, User> users;
     private Map<String, UUID> usernames;
 
-    // Klinsmann Kodra
+    // Klisman Kodra
     private Map<UUID, Movie> movies;
     private Map<UUID, Actor> actors;
     private Map<UUID, Director> directors;
@@ -163,7 +163,7 @@ public class ApplicationState {
         }
     }
 
-    // Klinsmann Kodra
+    // Klisman Kodra
     public Movie getMovie(UUID movieId) {
         return movieId == null ? null : movies.get(movieId);
     }
@@ -472,7 +472,7 @@ public class ApplicationState {
         populateCatalogue();
     }
 
-    // Klinsmann Kodra
+    // Klisman Kodra
     private void populateCatalogue() {
         addDirector(new Director(nolanID, "Christopher", "Nolan", null, "British"));
         addDirector(new Director(scorseseID, "Martin", "Scorsese", null, "American"));

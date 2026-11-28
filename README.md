@@ -24,7 +24,7 @@ Phase 1 is the domain model and the web service. Phase 2 is the web app.
 
 - Elias Mounerat: the domain model and its tests.
 - Mouhamed Sarira: the web service, the users CRUD, the README and the Postman collection.
-- Klinsmann Kodra: the movies CRUD and the advanced search in the service (with a demo catalogue).
+- Klisman Kodra: the movies CRUD and the advanced search in the service (with a demo catalogue).
 - Samy Hajhouj: the reviews and the watchlists in the service.
 
 Phase 2:
@@ -33,6 +33,9 @@ Phase 2:
   and the calls for the movies, the reviews and the watchlist in `CineRateService`.
 - Elias Mounerat: the actors, directors and genres in the service, the login filter, the design
   and the home page.
+- Klisman Kodra: the catalogue and movie detail pages, the search of the home page, and the
+  real movies shown on the home page (`CatalogueBean`, `MovieDetailBean`, `HomeBean`,
+  `MovieDisplay`).
 
 ## How to run it
 
@@ -63,7 +66,8 @@ The web app is here: http://localhost:8080/CineRateWebApp-1.0-SNAPSHOT/ (it open
 ## Web app pages
 
 - `Home.xhtml`: the home page, open to everyone, with links to log in and to register.
-  The movies shown on it are examples written in the page.
+  It shows the best-rated and the most reviewed movies of the service (`HomeBean`). The search
+  bar opens `Catalogue.xhtml?q=...` with the text typed.
 - `Login.xhtml`: log in with a username and a password (`POST /users/login`). A wrong username
   or password shows "Invalid login".
 - `Register.xhtml`: create an account (`POST /users`). If the data is not valid, the page shows
@@ -73,9 +77,24 @@ The web app is here: http://localhost:8080/CineRateWebApp-1.0-SNAPSHOT/ (it open
   - Change the password. The current password is checked first.
   - Delete the account.
   - `Logout` in the menu.
+- `Catalogue.xhtml`: all the movies (`GET /movies`), shown as posters.
+  - One search field for the title, an actor, a director, a genre or a theme. The results change
+    while typing. Several clues can be separated with a comma (`dicaprio, dream`).
+  - Genre buttons, a director list and an actor list (`searchMovies` of `CineRateService`).
+  - Sort by rating, by year or by title.
+  - When no filter is used, the best-rated movie is shown at the top.
+- `MovieDetail.xhtml?id=...`: one movie (`GET /movies/{id}`).
+  - Poster, year, length, genres, average rating, synopsis and director.
+  - Add to or remove from the watchlist (`POST` / `DELETE /users/{id}/watchlist/{movieId}`).
+  - Cast and crew, themes and reviews. A click on a name, a genre or a theme searches the
+    catalogue for it.
+  - "More like this": movies that share a genre.
+
+`MovieDisplay` formats what these pages show (rating, length, genres, colour of the poster when
+the movie has no image). Its tests are in `MovieDisplayTest`.
 
 Components used: `p:panel`, `p:outputLabel`, `p:inputText`, `p:password`, `p:commandButton`,
-`p:message`, `p:growl` and `p:dialog`.
+`p:message`, `p:growl`, `p:dialog`, `p:commandLink`, `p:ajax` and `p:outputPanel`.
 
 Without login, only `Home.xhtml`, `Login.xhtml` and `Register.xhtml` can be opened. The other
 pages send back to `Login.xhtml` (`AuthenticationFilter`).
@@ -315,4 +334,4 @@ Run `GET /service/reset` before running the collection: it expects the demo cata
 
 ## Group
 
-Samy Hajhouj, Elias Mounerat, Mouhamed Sarira, Klinsmann Kodra
+Samy Hajhouj, Elias Mounerat, Mouhamed Sarira, Klisman Kodra

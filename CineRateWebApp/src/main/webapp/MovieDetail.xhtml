@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Page MovieDetail - Klisman Kodra -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="templates/UserTemplate.xhtml">
+
+    <ui:define name="title">CineRate | #{movieDetailBean.found ? movieDetailBean.movie.title : 'Movie'}</ui:define>
+
+    <ui:define name="section-title">#{movieDetailBean.found ? movieDetailBean.movie.title : 'Movie'}</ui:define>
+
+    <ui:define name="section-content">
+        <h:outputStylesheet name="css/catalogue.css"/>
+
+        <div class="cr">
+            <h:link outcome="Catalogue" styleClass="cr-back">&#8592; Back to catalogue</h:link>
+
+            <h:panelGroup layout="block" styleClass="cr-empty" rendered="#{not movieDetailBean.found}">
+                <span class="cr-empty-icon pi pi-search">&#8203;</span>
+                <h2 class="cr-empty-title">Movie not found</h2>
+                <p>This movie does not exist anymore, or the link is not valid.</p>
+                <h:link outcome="Catalogue" value="Browse the catalogue" styleClass="btn-yellow"/>
+            </h:panelGroup>
+
+            <ui:fragment rendered="#{movieDetailBean.found}">
+                <!-- Fiche du film -->
+                <section class="cr-hero #{movieDisplay.tone(movieDetailBean.movie)}">
+                    <div class="cr-hero-poster">
+                        <div class="cr-poster cr-poster-large #{movieDisplay.tone(movieDetailBean.movie)}">
+                            <h:graphicImage value="#{movieDetailBean.movie.posterUrl}" alt="#{movieDetailBean.movie.title}"
+                                            rendered="#{movieDisplay.hasPoster(movieDetailBean.movie)}"/>
+                            <h:panelGroup styleClass="cr-poster-title" rendered="#{not movieDisplay.hasPoster(movieDetailBean.movie)}">#{movieDetailBean.movie.title}</h:panelGroup>
+                        </div>
+                    </div>
+
+                    <div class="cr-hero-info">
+                        <p class="cr-eyebrow">
+                            #{movieDetailBean.movie.releaseYear}
+                            <h:outputText value=" &#183; #{movieDisplay.duration(movieDetailBean.movie.duration)}"
+                                          rendered="#{movieDetailBean.movie.duration gt 0}"/>
+                        </p>
+                        <h1 class="cr-hero-title">#{movieDetailBean.movie.title}</h1>
+
+                        <div class="cr-tags">
+                            <ui:repeat value="#{movieDisplay.genreLabels(movieDetailBean.movie)}" var="genre">
+                                <h:link outcome="Catalogue" value="#{genre}" styleClass="cr-chip">
+                                    <f:param name="q" value="#{genre}"/>
+                                </h:link>
+                            </ui:repeat>
+                        </div>
+
+                        <div class="cr-score">
+                            <div class="cr-score-value">
+                                <span class="cr-score-big">#{movieDisplay.rating(movieDetailBean.movie)}</span>
+                                <h:outputText styleClass="cr-score-max" value="/ 10"
+                                              rendered="#{movieDisplay.isRated(movieDetailBean.movie)}"/>
+                            </div>
+                            <div class="cr-score-side">
+                                <div class="cr-score-bar">
+                                    <span style="width: #{movieDisplay.ratingPercent(movieDetailBean.movie)}%">&#8203;</span>
+                                </div>
+                                <span class="cr-score-count">#{movieDisplay.ratingCount(movieDetailBean.movie)}</span>
+                            </div>
+                        </div>
+
+                        <h:outputText styleClass="cr-synopsis cr-block" value="#{movieDetailBean.movie.synopsis}"
+                                      rendered="#{not empty movieDetailBean.movie.synopsis}"/>
+
+                        <dl class="cr-facts">
+                            <div>
+                                <dt>Director</dt>
+                                <dd>#{empty movieDetailBean.movie.directorName ? 'Unknown' : movieDetailBean.movie.directorName}</dd>
+                            </div>
+                            <div>
+                                <dt>Released</dt>
+                                <dd>#{movieDetailBean.movie.releaseYear}</dd>
+                            </div>
+                            <ui:fragment rendered="#{movieDetailBean.movie.duration gt 0}">
+                                <div>
+                                    <dt>Runtime</dt>
+                                    <dd>#{movieDisplay.duration(movieDetailBean.movie.duration)}</dd>
+                                </div>
+                            </ui:fragment>
+                        </dl>
+
+                        <h:form id="actions" styleClass="cr-form cr-actions">
+                            <p:growl id="growl" life="3500"/>
+                            <p:commandButton id="watchlistButton"
+                                             value="#{movieDetailBean.inWatchlist ? 'In your watchlist' : 'Add to watchlist'}"
+                                             icon="#{movieDetailBean.inWatchlist ? 'pi pi-check' : 'pi pi-bookmark'}"
+                                             styleClass="cr-btn #{movieDetailBean.inWatchlist ? 'cr-btn-ghost' : ''}"
+                                             action="#{movieDetailBean.toggleWatchlist}"
+                                             process="@this" update="@form"/>
+                        </h:form>
+                    </div>
+                </section>
+
+                <!-- Casting -->
+                <ui:fragment rendered="#{not empty movieDetailBean.cast or not empty movieDetailBean.movie.directorName}">
+                    <section class="cr-section">
+                        <h2 class="cr-section-title">Cast &amp; crew</h2>
+                        <div class="cr-people">
+                            <ui:fragment rendered="#{not empty movieDetailBean.movie.directorName}">
+                                <h:link outcome="Catalogue" styleClass="cr-person">
+                                    <f:param name="q" value="#{movieDetailBean.movie.directorName}"/>
+                                    <span class="cr-avatar is-accent">#{movieDisplay.initials(movieDetailBean.movie.directorName)}</span>
+                                    <span class="cr-person-name">#{movieDetailBean.movie.directorName}</span>
+                                    <span class="cr-person-role">Director</span>
+                                </h:link>
+                            </ui:fragment>
+                            <ui:repeat value="#{movieDetailBean.cast}" var="actor">
+                                <h:link outcome="Catalogue" styleClass="cr-person">
+                                    <f:param name="q" value="#{actor.fullName}"/>
+                                    <span class="cr-avatar">#{movieDisplay.initials(actor.fullName)}</span>
+                                    <span class="cr-person-name">#{actor.fullName}</span>
+                                    <span class="cr-person-role">Actor</span>
+                                </h:link>
+                            </ui:repeat>
+                        </div>
+                    </section>
+                </ui:fragment>
+
+                <!-- Thèmes : un clic relance la recherche du Catalogue -->
+                <ui:fragment rendered="#{not empty movieDetailBean.movie.keywords}">
+                    <section class="cr-section">
+                        <h2 class="cr-section-title">Themes</h2>
+                        <div class="cr-tags">
+                            <ui:repeat value="#{movieDetailBean.movie.keywords}" var="keyword">
+                                <h:link outcome="Catalogue" value="#{keyword}" styleClass="cr-chip cr-chip-quiet">
+                                    <f:param name="q" value="#{keyword}"/>
+                                </h:link>
+                            </ui:repeat>
+                        </div>
+                    </section>
+                </ui:fragment>
+
+                <!-- Avis -->
+                <section class="cr-section" id="reviews">
+                    <div class="cr-section-head">
+                        <h2 class="cr-section-title">Reviews</h2>
+                        <span class="cr-count">#{movieDisplay.ratingCount(movieDetailBean.movie)}</span>
+                    </div>
+
+                    <h:panelGroup layout="block" styleClass="cr-empty cr-empty-small"
+                                  rendered="#{empty movieDetailBean.reviews}">
+                        <p>No reviews yet. Be the first to say what you thought of #{movieDetailBean.movie.title}.</p>
+                    </h:panelGroup>
+
+                    <div class="cr-reviews">
+                        <ui:repeat value="#{movieDetailBean.reviews}" var="review">
+                            <article class="cr-review #{movieDetailBean.isOwnReview(review) ? 'is-own' : ''}">
+                                <header class="cr-review-head">
+                                    <span class="cr-avatar cr-avatar-small">#{movieDisplay.initials(review.username)}</span>
+                                    <div class="cr-review-author">
+                                        <span class="cr-review-name">
+                                            #{review.username}
+                                            <h:outputText styleClass="cr-you" value="You"
+                                                          rendered="#{movieDetailBean.isOwnReview(review)}"/>
+                                        </span>
+                                        <span class="cr-review-date">#{movieDisplay.date(review.date)}</span>
+                                    </div>
+                                    <span class="cr-review-score">&#9733; #{review.rating}<small>/10</small></span>
+                                </header>
+                                <h:outputText styleClass="cr-review-text" value="#{review.comment}"
+                                              rendered="#{not empty review.comment}"/>
+                            </article>
+                        </ui:repeat>
+                    </div>
+                </section>
+
+                <!-- Films similaires -->
+                <ui:fragment rendered="#{not empty movieDetailBean.similar}">
+                    <section class="cr-section">
+                        <h2 class="cr-section-title">More like this</h2>
+                        <div class="cr-grid">
+                            <ui:repeat value="#{movieDetailBean.similar}" var="other">
+                                <ui:include src="/WEB-INF/includes/MovieCard.xhtml">
+                                    <ui:param name="movie" value="#{other}"/>
+                                </ui:include>
+                            </ui:repeat>
+                        </div>
+                    </section>
+                </ui:fragment>
+            </ui:fragment>
+        </div>
+    </ui:define>
+
+</ui:composition>
+
+</html>

@@ -9,7 +9,7 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import java.util.logging.Logger;
 
-// Mouhamed Sarira, Klinsmann Kodra, Samy Hajhouj
+// Mouhamed Sarira, Klisman Kodra, Samy Hajhouj
 @Provider
 public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
     private static final Logger log = Logger.getLogger(GlobalExceptionMapper.class.getName());

@@ -9,7 +9,7 @@ import static ch.unil.doplab.cinerate.domain.ApplicationState.*;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
-// Klinsmann Kodra
+// Klisman Kodra
 class ApplicationStateMovieTest {
 
     private static final UUID aliceID = UUID.fromString("1ead1a6d-7d30-4e2d-96ad-37f620949a9b");

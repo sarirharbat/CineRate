@@ -4,7 +4,7 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 
 import java.util.List;
 
-// Klinsmann Kodra
+// Klisman Kodra
 public class MovieData {
 
     private String title;

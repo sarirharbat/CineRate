@@ -3,7 +3,7 @@ package ch.unil.doplab.cinerate.web;
 import java.io.Serializable;
 import java.util.UUID;
 
-// Klinsmann Kodra
+// Klisman Kodra
 public class MovieRow implements Serializable {
 
     private final UUID id;

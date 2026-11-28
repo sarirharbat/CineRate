@@ -11,7 +11,7 @@ import java.util.TreeSet;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
-// Klinsmann Kodra
+// Klisman Kodra
 class CatalogueBeanTest {
 
     private CatalogueBean bean;

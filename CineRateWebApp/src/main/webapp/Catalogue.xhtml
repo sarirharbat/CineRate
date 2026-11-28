@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Page Catalogue - Klisman Kodra -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+<ui:composition template="templates/UserTemplate.xhtml">
+
+    <ui:define name="title">CineRate | Catalogue</ui:define>
+
+    <ui:define name="section-title">Catalogue</ui:define>
+
+    <ui:define name="section-content">
+        <h:outputStylesheet name="css/catalogue.css"/>
+
+        <div class="cr">
+            <header class="cr-head">
+                <p class="cr-eyebrow">Catalogue</p>
+                <h1 class="cr-title">Find your next movie</h1>
+                <p class="cr-sub">
+                    #{catalogueBean.totalCount} movies to explore. Forgot the title?
+                    Type an actor, a director, a genre or a theme.
+                </p>
+            </header>
+
+            <h:panelGroup layout="block" styleClass="cr-empty" rendered="#{not catalogueBean.serviceAvailable}">
+                <span class="cr-empty-icon">&#9888;</span>
+                <h2 class="cr-empty-title">The catalogue is not reachable</h2>
+                <p>Make sure CineRateService is deployed, then reload this page.</p>
+            </h:panelGroup>
+
+            <h:form id="catalogue" styleClass="cr-form" rendered="#{catalogueBean.serviceAvailable}">
+
+                <div class="cr-search">
+                    <span class="cr-search-icon pi pi-search">&#8203;</span>
+                    <p:inputText id="query" value="#{catalogueBean.query}" styleClass="cr-search-input"
+                                 placeholder="e.g. DiCaprio, dream, Nolan..." autocomplete="off"
+                                 a:aria-label="Search the catalogue">
+                        <p:ajax event="keyup" delay="250" listener="#{catalogueBean.search}"
+                                update="results clear"/>
+                    </p:inputText>
+                    <h:panelGroup id="clear">
+                        <p:commandLink styleClass="cr-search-clear" rendered="#{catalogueBean.filtered}"
+                                       action="#{catalogueBean.clearFilters}" process="@this" update="@form">
+                            Clear
+                        </p:commandLink>
+                    </h:panelGroup>
+                </div>
+
+                <div class="cr-chips">
+                    <p:commandLink value="All genres" action="#{catalogueBean.showAllGenres}"
+                                   process="@form" update="@form"
+                                   styleClass="cr-chip #{empty catalogueBean.genre ? 'is-active' : ''}"/>
+                    <ui:repeat value="#{catalogueBean.genres}" var="genre">
+                        <p:commandLink value="#{genre}" action="#{catalogueBean.toggleGenre(genre)}"
+                                       process="@form" update="@form"
+                                       styleClass="cr-chip #{catalogueBean.isGenreSelected(genre) ? 'is-active' : ''}"/>
+                    </ui:repeat>
+                </div>
+
+                <div class="cr-toolbar">
+                    <div class="cr-selects">
+                        <label class="cr-select">
+                            <span>Director</span>
+                            <h:selectOneMenu value="#{catalogueBean.director}">
+                                <f:selectItem itemLabel="Any director" itemValue=""/>
+                                <f:selectItems value="#{catalogueBean.directors}" var="director"
+                                               itemLabel="#{director.fullName}" itemValue="#{director.fullName}"/>
+                                <p:ajax listener="#{catalogueBean.search}" process="@form" update="@form"/>
+                            </h:selectOneMenu>
+                        </label>
+                        <label class="cr-select">
+                            <span>Actor</span>
+                            <h:selectOneMenu value="#{catalogueBean.actor}">
+                                <f:selectItem itemLabel="Any actor" itemValue=""/>
+                                <f:selectItems value="#{catalogueBean.actors}" var="actor"
+                                               itemLabel="#{actor.fullName}" itemValue="#{actor.fullName}"/>
+                                <p:ajax listener="#{catalogueBean.search}" process="@form" update="@form"/>
+                            </h:selectOneMenu>
+                        </label>
+                    </div>
+
+                    <div class="cr-segmented" role="group" aria-label="Sort">
+                        <span class="cr-segmented-label">Sort by</span>
+                        <p:commandLink value="Rating" action="#{catalogueBean.sortBy('rating')}"
+                                       process="@form" update="@form"
+                                       styleClass="#{catalogueBean.isSortedBy('rating') ? 'is-active' : ''}"/>
+                        <p:commandLink value="Newest" action="#{catalogueBean.sortBy('year')}"
+                                       process="@form" update="@form"
+                                       styleClass="#{catalogueBean.isSortedBy('year') ? 'is-active' : ''}"/>
+                        <p:commandLink value="A-Z" action="#{catalogueBean.sortBy('title')}"
+                                       process="@form" update="@form"
+                                       styleClass="#{catalogueBean.isSortedBy('title') ? 'is-active' : ''}"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="results" layout="block">
+
+                    <ui:fragment rendered="#{catalogueBean.spotlightVisible}">
+                        <section class="cr-spotlight #{movieDisplay.tone(catalogueBean.spotlight)}">
+                            <div class="cr-spotlight-text">
+                                <p class="cr-eyebrow">
+                                    #{movieDisplay.isRated(catalogueBean.spotlight) ? 'Top rated' : 'Featured'}
+                                </p>
+                                <h2 class="cr-spotlight-title">#{catalogueBean.spotlight.title}</h2>
+                                <p class="cr-meta">
+                                    #{catalogueBean.spotlight.releaseYear}
+                                    &#183; #{movieDisplay.duration(catalogueBean.spotlight.duration)}
+                                    &#183; #{movieDisplay.genres(catalogueBean.spotlight)}
+                                </p>
+                                <p class="cr-synopsis">#{catalogueBean.spotlight.synopsis}</p>
+                                <p class="cr-credits">
+                                    <h:outputText value="Directed by #{catalogueBean.spotlight.directorName}"
+                                                  rendered="#{not empty catalogueBean.spotlight.directorName}"/>
+                                    <h:outputText value=" &#183; With #{catalogueBean.castLine(catalogueBean.spotlight)}"
+                                                  rendered="#{not empty catalogueBean.castLine(catalogueBean.spotlight)}"/>
+                                </p>
+                                <h:link outcome="MovieDetail" value="View details" styleClass="btn-yellow">
+                                    <f:param name="id" value="#{catalogueBean.spotlight.UUID}"/>
+                                </h:link>
+                            </div>
+                            <div class="cr-spotlight-score">
+                                <span class="cr-score-big">#{movieDisplay.rating(catalogueBean.spotlight)}</span>
+                                <h:outputText styleClass="cr-score-max" value="/ 10"
+                                              rendered="#{movieDisplay.isRated(catalogueBean.spotlight)}"/>
+                                <span class="cr-score-count">#{movieDisplay.ratingCount(catalogueBean.spotlight)}</span>
+                            </div>
+                        </section>
+                    </ui:fragment>
+
+                    <div class="cr-results-bar">
+                        <span class="cr-count">#{catalogueBean.resultLabel}</span>
+                    </div>
+
+                    <h:panelGroup layout="block" styleClass="cr-grid" rendered="#{not empty catalogueBean.movies}">
+                        <ui:repeat value="#{catalogueBean.movies}" var="movie">
+                            <ui:include src="/WEB-INF/includes/MovieCard.xhtml">
+                                <ui:param name="movie" value="#{movie}"/>
+                            </ui:include>
+                        </ui:repeat>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="cr-empty" rendered="#{empty catalogueBean.movies}">
+                        <span class="cr-empty-icon pi pi-search">&#8203;</span>
+                        <h2 class="cr-empty-title">No movie matches your search</h2>
+                        <p>Try fewer words, or separate several clues with a comma.</p>
+                        <p:commandLink value="Show all movies" action="#{catalogueBean.clearFilters}"
+                                       process="@this" update="@form" styleClass="btn-outline"/>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>
+
+</html>

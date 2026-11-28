@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-// Klinsmann Kodra
+// Klisman Kodra
 @Path("/movies")
 public class MovieResource {
     @Inject

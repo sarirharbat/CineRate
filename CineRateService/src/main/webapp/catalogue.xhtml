@@ -127,11 +127,11 @@
                         <p><h:outputText value="#{catalogueBean.selectedMovie.synopsis}"/></p>
                         <dl>
                             <dt>Director</dt>
-                            <dd><h:outputText value="#{empty catalogueBean.selectedMovie.director ? '—' : catalogueBean.selectedMovie.director}"/></dd>
+                            <dd><h:outputText value="#{empty catalogueBean.selectedMovie.director ? '-' : catalogueBean.selectedMovie.director}"/></dd>
                             <dt>Cast</dt>
-                            <dd><h:outputText value="#{empty catalogueBean.selectedMovie.cast ? '—' : catalogueBean.selectedMovie.cast}"/></dd>
+                            <dd><h:outputText value="#{empty catalogueBean.selectedMovie.cast ? '-' : catalogueBean.selectedMovie.cast}"/></dd>
                             <dt>Themes</dt>
-                            <dd><h:outputText value="#{empty catalogueBean.selectedMovie.keywords ? '—' : catalogueBean.selectedMovie.keywords}"/></dd>
+                            <dd><h:outputText value="#{empty catalogueBean.selectedMovie.keywords ? '-' : catalogueBean.selectedMovie.keywords}"/></dd>
                             <dt>Average rating</dt>
                             <dd>
                                 <h:outputText value="#{catalogueBean.selectedMovie.formattedRating}"/>

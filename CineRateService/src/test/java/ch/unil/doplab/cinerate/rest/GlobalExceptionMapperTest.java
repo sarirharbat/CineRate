@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// Klinsmann Kodra, Samy Hajhouj
+// Klisman Kodra, Samy Hajhouj
 class GlobalExceptionMapperTest {
 
     private static ProcessingException readFrom() {

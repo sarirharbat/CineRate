@@ -12,7 +12,7 @@ import java.util.List;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
-// Klinsmann Kodra
+// Klisman Kodra
 class MovieDataJsonTest {
 
     private static Jsonb jsonb;

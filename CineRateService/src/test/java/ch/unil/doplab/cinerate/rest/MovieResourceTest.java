@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static ch.unil.doplab.cinerate.domain.Utils.printMethodName;
 import static org.junit.jupiter.api.Assertions.*;
 
-// Klinsmann Kodra
+// Klisman Kodra
 class MovieResourceTest {
 
     @Test
